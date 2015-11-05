@@ -23,4 +23,23 @@
         android:layout_marginTop="186dp"
         android:text="Button" />
 
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button1"
+        android:layout_alignBottom="@+id/button1"
+        android:layout_alignLeft="@+id/textView1"
+        android:visibility="invisible"
+        android:text="Erscheune" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button1"
+        android:layout_marginTop="82dp"
+        android:visibility="invisible"
+        android:text="Manuel ist viel schlauer als der Fe es je sein wird. Ok der Fe ist auch schlau aber Magoeke nicht" />
+
 </RelativeLayout>

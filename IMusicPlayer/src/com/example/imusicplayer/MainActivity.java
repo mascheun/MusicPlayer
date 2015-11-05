@@ -9,10 +9,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	
-	Button button;
+	Button button1;
+	Button button2;
+	TextView tv1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,17 +46,29 @@ public class MainActivity extends Activity {
 	
 	public void addListenerOnButton() {
 
-		button = (Button) findViewById(R.id.button1);
+		button1 = (Button) findViewById(R.id.button1);
 
-		button.setOnClickListener(new OnClickListener() {
+		button1.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				System.out.println("Test");
+				button2 = (Button) findViewById(R.id.button2);
+				button2.setVisibility(Button.VISIBLE);
 
-//			  Intent browserIntent = 
-//                            new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.mkyong.com"));
-//			    startActivity(browserIntent);
+			}
+
+		});
+		
+		button2 = (Button) findViewById(R.id.button2);
+		
+		button2.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				button2.setVisibility(Button.INVISIBLE);
+				
+				tv1 = (TextView) findViewById(R.id.textView2);
+				tv1.setVisibility(TextView.VISIBLE);
 
 			}
 
