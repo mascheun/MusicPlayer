@@ -2253,6 +2253,7 @@ containing a value of this type.
          [CHAR LIMIT=4] 
          */
         public static final int status_bar_notification_info_overflow=0x7f0a0011;
+        public static final int title_activity_main=0x7f0a0017;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f0b0042;
