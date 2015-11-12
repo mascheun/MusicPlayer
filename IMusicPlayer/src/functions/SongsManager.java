@@ -13,7 +13,7 @@ import android.provider.ContactsContract.Directory;
  
 public class SongsManager {
     // SDCard Path
-    final String MEDIA_PATH = new String("storage/");
+    final String MEDIA_PATH = new String("storage/sdcard/Music/testLied");
     private ArrayList<HashMap<String, String>> songsList = new ArrayList<HashMap<String, String>>();
  
     // Constructor
@@ -26,33 +26,21 @@ public class SongsManager {
      * and store the details in ArrayList
      * */
     public ArrayList<HashMap<String, String>> getPlayList(){
-    	File home = new File(MEDIA_PATH);//Environment.getExternalStorageDirectory();
-        System.out.println(home.getPath());
-        if(home.list() != null) {
-            System.out.println(home.list());
-        } else {
-            System.out.println("is null");
+    	File home = Environment.getExternalStorageDirectory();
+
+        if (home.listFiles(new FileExtensionFilter()).length > 0) {
+            for (File file : home.listFiles(new FileExtensionFilter())) {
+                HashMap<String, String> song = new HashMap<String, String>();
+                song.put("songTitle", file.getName().substring(0, (file.getName().length() - 4)));
+                song.put("songPath", file.getPath());
+
+                // Adding each song to SongList
+                songsList.add(song);
+            }
         }
-        System.out.println(home.getUsableSpace());
-        System.out.println("TEst1");
+        // return songs list array
         return songsList;
     }
-//        if (home.listFiles(new FileExtensionFilter()).length > 0) {
-//        	System.out.println("TEst2");
-//            for (File file : home.listFiles(new FileExtensionFilter())) {
-//            	System.out.println("TEst3");
-//                HashMap<String, String> song = new HashMap<String, String>();
-//                song.put("songTitle", file.getName().substring(0, (file.getName().length() - 4)));
-//                song.put("songPath", file.getPath());
-// 
-//                System.out.println("TEst4");
-//                // Adding each song to SongList
-//                songsList.add(song);
-//            }
-//        }
-//        // return songs list array
-//        return songsList;
-//    }
  
     /**
      * Class to filter files which are having .mp3 extension

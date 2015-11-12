@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				songsList = sm.getPlayList();
-//				sm.playSong(0, songsList);
+				sm.playSong(1, songsList);
 //				button2 = (Button) findViewById(R.id.button2);
 //				button2.setVisibility(Button.VISIBLE);
 
