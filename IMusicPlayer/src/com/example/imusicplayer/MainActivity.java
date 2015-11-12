@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
 	        // Hole die Titel aus einem Array aus der strings.xml
 	        drawerTitles = getResources().getStringArray(R.array.drawerTitles_array);
 	        // Setzt die Icons zu den Einträgen
-	        drawerIcons = new int[] {android.R.drawable.ic_menu_info_details, android.R.drawable.ic_menu_edit, android.R.drawable.ic_menu_delete};
+	        drawerIcons = new int[] {android.R.drawable.ic_menu_manage, android.R.drawable.ic_menu_edit, android.R.drawable.ic_menu_delete};
 	 
 	        // Erstellt den neuen MenuAdapter aus der Klasse MenuListAdapter
 	        MenuListAdapter mMenuAdapter = new MenuListAdapter(this, drawerTitles, drawerSubtitles, drawerIcons);
@@ -120,11 +120,11 @@ public class MainActivity extends Activity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (position == 0) {
-                // Aktion
+            	Toast.makeText(null, "Dateibrowser gedrückt!", Toast.LENGTH_LONG).show();
             } else if (position == 1) {
-                // Aktion
+            	Toast.makeText(null, "Playlist gedrückt!", Toast.LENGTH_LONG).show();
             } else if (position == 2) {
-                // Aktion
+            	Toast.makeText(null, "Bluetooth gedrückt!", Toast.LENGTH_LONG).show();
             }
  
             mDrawerList.setItemChecked(position, true);
