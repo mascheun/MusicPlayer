@@ -15,31 +15,22 @@
         android:text="@string/hello_world" />
 
     <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="186dp"
-        android:text="Button" />
-
-    <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button1"
-        android:layout_alignBottom="@+id/button1"
-        android:layout_alignLeft="@+id/textView1"
-        android:visibility="invisible"
-        android:text="Erscheune" />
+        android:layout_below="@+id/button1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:text="@string/button_2"
+        android:visibility="invisible" />
 
-    <TextView
-        android:id="@+id/textView2"
+    <Button
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button1"
-        android:layout_marginTop="82dp"
-        android:visibility="invisible"
-        android:text="Manuel ist viel schlauer als der Fe es je sein wird. Ok der Fe ist auch schlau aber Magoeke nicht" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="178dp"
+        android:layout_toRightOf="@+id/textView1"
+        android:text="@string/button_1" />
 
 </RelativeLayout>

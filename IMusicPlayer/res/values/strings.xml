@@ -4,5 +4,7 @@
     <string name="app_name">IMusicPlayer</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="button_1">CreateSonglis</string>
+    <string name="button_2">PlayFirstSong</string>
 
 </resources>
