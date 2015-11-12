@@ -3,7 +3,7 @@ package functions;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class LiederSuche {
+public class SongSearch {
 	
 	public ArrayList<HashMap<String, String>> getSearchedSongs(ArrayList<HashMap<String, String>> allSongs, String searchText){
 		
