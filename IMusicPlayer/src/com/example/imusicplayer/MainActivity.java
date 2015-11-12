@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.example.imusicplayer.R;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
@@ -19,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import functions.SongsManager;
@@ -31,7 +33,6 @@ public class MainActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mTitle;
- 
     private String[] drawerTitles;
     private String[] drawerSubtitles;
     private int[] drawerIcons;
@@ -75,6 +76,21 @@ public class MainActivity extends Activity {
 	            }
 	        };
 	        mDrawerLayout.setDrawerListener(mDrawerToggle);
+	        
+	        final Button button = (Button) findViewById(R.id.button1);
+	         button.setOnClickListener(new View.OnClickListener() {
+	             public void onClick(View v) {
+	                 // Perform action on click
+	             }
+	         });
+	         
+	        final Button button2 = (Button) findViewById(R.id.button2);
+	         button.setOnClickListener(new View.OnClickListener() {
+	             public void onClick(View v) {
+	                 // Perform action on click
+	             }
+	         });
+
 		
 	}
 
@@ -120,11 +136,11 @@ public class MainActivity extends Activity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (position == 0) {
-            	Toast.makeText(null, "Dateibrowser gedrückt!", Toast.LENGTH_LONG).show();
+
             } else if (position == 1) {
-            	Toast.makeText(null, "Playlist gedrückt!", Toast.LENGTH_LONG).show();
+
             } else if (position == 2) {
-            	Toast.makeText(null, "Bluetooth gedrückt!", Toast.LENGTH_LONG).show();
+
             }
  
             mDrawerList.setItemChecked(position, true);

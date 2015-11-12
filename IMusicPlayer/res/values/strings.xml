@@ -5,6 +5,9 @@
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Open navigation drawer</string>
 	<string name="drawer_close">Close navigation drawer</string>
+	<string name="dialog_fire_missiles">Fire missiles?</string>
+	<string name="fire">Fire</string>
+	<string name="cancel">Cancel</string>
 	
 	<string-array name="drawerTitles_array">
     	<item>Dateibrowser</item>
