@@ -11,7 +11,7 @@ public class LiederSuche {
 	
 	public ArrayList<HashMap<String, String>> getSearchedSongs(ArrayList<HashMap<String, String>> allSongs){
 		
-		for()
+		for(HashMap<String, String>)
 
         if (home.listFiles(new FileExtensionFilter()).length > 0) {
             for (File file : home.listFiles(new FileExtensionFilter())) {
