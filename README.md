@@ -1,7 +1,6 @@
 # MusicPlayer
 
-Links Oben Menü, Drei punkte-
+Links Oben Menü, Drei Punkte
 - suche nach Lieder auf fem Handy
 - playlist
-- Datenbank
-- 
+- datenbank
