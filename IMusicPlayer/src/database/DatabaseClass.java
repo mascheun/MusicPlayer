@@ -38,19 +38,19 @@ public class DatabaseClass {
 		playListDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + playlist + " (name VARCHAR);");
 	}
 	
-	public void addSong(String name) {
-		songDatabase.execSQL("CREATE TABLE IF NOT EXISTS "+ name + " (song VARCHAR);");
-	}
+//	public void addSong(String name) {
+//		songDatabase.execSQL("CREATE TABLE IF NOT EXISTS "+ name + " (song VARCHAR);");
+//	}
 	
 	public void addSongToPlayList(String playlist, String songName) {
-		songDatabase.execSQL("INSERT INTO " + playlist + " VALUES('" + songName + "');");
+		playListDatabase.execSQL("INSERT INTO " + playlist + " VALUES('" + songName + "');");
 	}
 	
 	public ArrayList<String> showPlayLists() {
 		
 		ArrayList<String> playLists = new ArrayList<String>();
 
-        String selectQuery = "SELECT * FROM list;";
+        String selectQuery = "SELECT * FROM PlayList;";
         Cursor cursor = playListDatabase.rawQuery(selectQuery, null);
         
         // looping through all rows and adding to list
@@ -68,7 +68,7 @@ public class DatabaseClass {
 		ArrayList<String> songs = new ArrayList<String>();
         String selectQuery = "SELECT * FROM " + playlist + ";";
         
-        Cursor cursor =  songDatabase.rawQuery(selectQuery, null);
+        Cursor cursor =  playListDatabase.rawQuery(selectQuery, null);
         
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
