@@ -45,10 +45,9 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		db = new DatabaseClass();
-		
+		db = new DatabaseClass(this);
 		db.CreatePlayListDatabase();
-		
+		db.addPlayListTable();
 		
 		setContentView(R.layout.activity_main);
 		

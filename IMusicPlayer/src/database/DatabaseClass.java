@@ -6,21 +6,36 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DatabaseClass extends Activity {
+public class DatabaseClass {
+	
+	Activity activ;
+	
+	public DatabaseClass(Activity activ) {
+		
+		this.activ = activ;
+		
+	}
 	
 	SQLiteDatabase playListDatabase;
 	SQLiteDatabase songDatabase;
 	
 	public void CreatePlayListDatabase() {
-		playListDatabase = openOrCreateDatabase("PlayLists", MODE_PRIVATE, null);
+		playListDatabase = activ.openOrCreateDatabase("PlayLists", Activity.MODE_PRIVATE, null);
 	}
 	
 	public void CreateSongDatabase(String PlayListName) {
-		songDatabase = openOrCreateDatabase(PlayListName, MODE_PRIVATE, null);
+		songDatabase = activ.openOrCreateDatabase(PlayListName, Activity.MODE_PRIVATE, null);
 	}
 	
-	public void addPlayList(String name) {
-		playListDatabase.execSQL("CREATE TABLE IF NOT EXISTS "+ name + " (song VARCHAR);");
+	public void addPlayListTable() {
+		playListDatabase.execSQL("CREATE TABLE IF NOT EXISTS PlayList (name VARCHAR);");
+	}
+	
+	//Add the PlayList name in the Playlist Table and create a new Table for the playlist
+	public void addPlayList(String playlist) {
+    	System.out.println("AddedDatabase: " + playlist );
+		playListDatabase.execSQL("INSERT INTO PlayList VALUES('" + playlist + "');");
+		playListDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + playlist + " (name VARCHAR);");
 	}
 	
 	public void addSong(String name) {
@@ -35,7 +50,7 @@ public class DatabaseClass extends Activity {
 		
 		ArrayList<String> playLists = new ArrayList<String>();
 
-        String selectQuery = "SELECT * FROM PlayLists;";
+        String selectQuery = "SELECT * FROM list;";
         Cursor cursor = playListDatabase.rawQuery(selectQuery, null);
         
         // looping through all rows and adding to list
