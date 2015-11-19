@@ -1,5 +1,7 @@
 package com.example.imusicplayer;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,6 +10,7 @@ import com.example.imusicplayer.R;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,9 +19,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import database.DatabaseClass;
@@ -39,6 +45,8 @@ public class MainActivity extends Activity {
     private DatabaseClass db;
     Button button;
     Button button1;
+    ListView showSongs;
+    ListView playLists;
 
 
 	@Override
@@ -52,44 +60,18 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		mTitle = getTitle();
-		 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+		
+		initializeAllGuiObjects();
+
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
  
-        // Hole die Titel aus einem Array aus der strings.xml
-        drawerTitles = getResources().getStringArray(R.array.drawerTitles_array);
-        // Setzt die Icons zu den Einträgen
-        drawerIcons = new int[] {android.R.drawable.ic_menu_manage, android.R.drawable.ic_menu_edit, android.R.drawable.ic_menu_delete};
- 
-        // Erstellt den neuen MenuAdapter aus der Klasse MenuListAdapter
-        MenuListAdapter mMenuAdapter = new MenuListAdapter(this, drawerTitles, drawerSubtitles, drawerIcons);
-        mDrawerList.setAdapter(mMenuAdapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
- 
-        // Bereitet die ActionBar auf den Navigation Drawer vor
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
- 
-        // Fügt den Navigation Drawer zur ActionBar hinzu
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
-            public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
-                invalidateOptionsMenu();
-            }
- 
-            public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(R.string.app_name);
-                invalidateOptionsMenu();
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        createMenue();
         
-
+        getPlayList();
 		
 	}
 
-	 // Fügt das Menü hinzu / ActionBar Einträge
+	// Fügt das Menü hinzu / ActionBar Einträge
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -156,5 +138,102 @@ public class MainActivity extends Activity {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-	
+    
+	 public void initializeAllGuiObjects() {
+	        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+	        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+	        showSongs = (ListView) findViewById(R.id.songs_drawer);
+	        playLists = (ListView) findViewById(R.id.playlist_drawer);
+		
+	}
+    
+    public void createMenue() {
+        // Hole die Titel aus einem Array aus der strings.xml
+        drawerTitles = getResources().getStringArray(R.array.drawerTitles_array);
+        // Setzt die Icons zu den Einträgen
+        drawerIcons = new int[] {android.R.drawable.ic_menu_manage, android.R.drawable.ic_menu_edit, android.R.drawable.ic_menu_delete};
+ 
+        // Erstellt den neuen MenuAdapter aus der Klasse MenuListAdapter
+        MenuListAdapter mMenuAdapter = new MenuListAdapter(this, drawerTitles, drawerSubtitles, drawerIcons);
+        mDrawerList.setAdapter(mMenuAdapter);
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+ 
+        // Bereitet die ActionBar auf den Navigation Drawer vor
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+ 
+        // Fügt den Navigation Drawer zur ActionBar hinzu
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu();
+            }
+ 
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(R.string.app_name);
+                invalidateOptionsMenu();
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+    
+    public void showSongList(ArrayList<String> allSongList) {
+    	showSongs.setVisibility(ListView.VISIBLE);
+
+        ListAdapter adapter = new ArrayAdapter<String>(this,
+            android.R.layout.simple_list_item_1, allSongList);
+        showSongs.setAdapter(adapter);
+    }
+    
+    public void showPlayList(ArrayList<String> allPlayLists) {
+    	playLists.setVisibility(ListView.VISIBLE);
+
+    	
+        ListAdapter adapter = new ArrayAdapter<String>(this,
+            android.R.layout.simple_list_item_1, allPlayLists);
+        playLists.setAdapter(adapter);
+    }
+    
+    public void setONClickSong() {
+    	showSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    	      @Override
+    	      public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+    	    	  showSongs.setVisibility(ListView.INVISIBLE);
+    	    	  final String item = (String) parent.getItemAtPosition(position);
+//    	    	  sm.playSong(item);
+    	      }
+
+    	    });
+    }
+    
+    /**
+     * Function to read all mp3 files from sdcard
+     * and store the details in ArrayList
+     * */
+    public ArrayList<HashMap<String, String>> getPlayList(){
+    	File home = Environment.getExternalStorageDirectory();
+
+        if (home.listFiles(/*new FileExtensionFilter()*/).length > 0) {
+            for (File file : home.listFiles(new FileExtensionFilter())) {
+                HashMap<String, String> song = new HashMap<String, String>();
+                song.put("songTitle", file.getName().substring(0, (file.getName().length() - 4)));
+                song.put("songPath", file.getPath());
+
+                // Adding each song to SongList
+                songsList.add(song);
+            }
+        }
+        // return songs list array
+        return songsList;
+    }
+    
+    /**
+     * Class to filter files which are having .mp3 extension
+     * */
+    class FileExtensionFilter implements FilenameFilter {
+        public boolean accept(File dir, String name) {
+            return (name.endsWith(".mp3") || name.endsWith(".MP3"));
+        }
+    }
+    
 }

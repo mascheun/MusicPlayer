@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.example.imusicplayer.MainActivity;
 import com.example.imusicplayer.R;
 
 import android.media.MediaPlayer;
@@ -25,7 +26,7 @@ public class SongsManager {
      * Function to read all mp3 files from sdcard
      * and store the details in ArrayList
      * */
-    public ArrayList<HashMap<String, String>> getPlayList(){
+    public ArrayList<HashMap<String, String>> getPlayList(MainActivity ma){
     	File home = Environment.getExternalStorageDirectory();
 
         if (home.listFiles(new FileExtensionFilter()).length > 0) {
