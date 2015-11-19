@@ -55,11 +55,18 @@ public class SongsManager {
      * Function to play a song
      * @param songIndex - index of song
      * */
-    public void  playSong(int songIndex, ArrayList<HashMap<String, String>> songsList){
+    public void  playSong(int songIndex, ArrayList<HashMap<String, String>> songsList, String songname){
         // Play song
         try {
             mp.reset();
-            mp.setDataSource(songsList.get(songIndex).get("songPath"));
+            String songPath = "";
+            for(HashMap<String, String> hm: songsList) {
+            	if(hm.get("songTitle").equals(songname)) {
+            		songPath = hm.get("songPath");
+            		break;
+            	}
+            }
+            mp.setDataSource(songPath);
             mp.prepare();
             mp.start();
 
