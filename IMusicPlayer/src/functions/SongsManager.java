@@ -5,12 +5,8 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.example.imusicplayer.MainActivity;
-import com.example.imusicplayer.R;
-
 import android.media.MediaPlayer;
 import android.os.Environment;
-import android.provider.ContactsContract.Directory;
  
 public class SongsManager {
     // SDCard Path
