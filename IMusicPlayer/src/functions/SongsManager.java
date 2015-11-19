@@ -26,7 +26,7 @@ public class SongsManager {
      * Function to read all mp3 files from sdcard
      * and store the details in ArrayList
      * */
-    public ArrayList<HashMap<String, String>> getPlayList(MainActivity ma){
+    public ArrayList<HashMap<String, String>> getPlayList(){
     	File home = Environment.getExternalStorageDirectory();
 
         if (home.listFiles(new FileExtensionFilter()).length > 0) {

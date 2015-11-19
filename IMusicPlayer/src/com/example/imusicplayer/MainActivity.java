@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,7 +68,11 @@ public class MainActivity extends Activity {
  
         createMenue();
         
-        getPlayList();
+        setONClickSong();
+        
+        showSongList(sm.getPlayList());
+        
+        //sm.playSong(1, sm.getPlayList());
 		
 	}
 
@@ -177,7 +182,14 @@ public class MainActivity extends Activity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
     
-    public void showSongList(ArrayList<String> allSongList) {
+    public void showSongList(ArrayList<HashMap<String, String>> allSongListHash) {
+    	
+    	ArrayList<String> allSongList = new ArrayList<String>();
+    	
+    	for(HashMap<String, String> hm : allSongListHash){
+    		allSongList.add(hm.get("songTitle"));
+    	}
+    	
     	showSongs.setVisibility(ListView.VISIBLE);
 
         ListAdapter adapter = new ArrayAdapter<String>(this,
@@ -195,45 +207,14 @@ public class MainActivity extends Activity {
     }
     
     public void setONClickSong() {
-    	showSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-    	      @Override
-    	      public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-    	    	  showSongs.setVisibility(ListView.INVISIBLE);
-    	    	  final String item = (String) parent.getItemAtPosition(position);
-//    	    	  sm.playSong(item);
-    	      }
-
-    	    });
-    }
-    
-    /**
-     * Function to read all mp3 files from sdcard
-     * and store the details in ArrayList
-     * */
-    public ArrayList<HashMap<String, String>> getPlayList(){
-    	File home = Environment.getExternalStorageDirectory();
-
-        if (home.listFiles(/*new FileExtensionFilter()*/).length > 0) {
-            for (File file : home.listFiles(new FileExtensionFilter())) {
-                HashMap<String, String> song = new HashMap<String, String>();
-                song.put("songTitle", file.getName().substring(0, (file.getName().length() - 4)));
-                song.put("songPath", file.getPath());
-
-                // Adding each song to SongList
-                songsList.add(song);
+    	showSongs.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+            	Object o = showSongs.getItemAtPosition(position);
+            	System.out.println(o.toString());
+            	sm.playSong(position, sm.getPlayList());
             }
-        }
-        // return songs list array
-        return songsList;
-    }
-    
-    /**
-     * Class to filter files which are having .mp3 extension
-     * */
-    class FileExtensionFilter implements FilenameFilter {
-        public boolean accept(File dir, String name) {
-            return (name.endsWith(".mp3") || name.endsWith(".MP3"));
-        }
+        });
     }
     
 }
