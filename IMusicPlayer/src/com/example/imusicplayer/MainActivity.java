@@ -85,30 +85,7 @@ public class MainActivity extends Activity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         
-        final EditText ed = (EditText) findViewById(R.id.editText1);
-        
-        button = (Button) findViewById(R.id.button1);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-            	db.addPlayList(ed.getText().toString());
-            }
-        });
-         
-        final TextView tv = (TextView) findViewById(R.id.textView1);
-         
-        button1 = (Button) findViewById(R.id.button2);
-        button1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-            	ArrayList<String> lists = db.showPlayLists();
-            	String s = "";
-            	for(String text : lists) {
-            		s = s + text + "\n";
-            	}
-            	tv.setText(s);
-            }
-        });
+
 		
 	}
 

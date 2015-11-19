@@ -8,61 +8,24 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.imusicplayer.MainActivity" >
-    
-    <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:id="@+id/drawer_layout"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent" >
-	 
-	    <!-- Ihre Layout-Elemente oder ein Fragment-Container -->
-	 
-	    <ListView
-	        android:id="@+id/left_drawer"
-	        android:layout_width="300dp"
-	        android:layout_height="match_parent"
-	        android:layout_gravity="start"
-	        android:background="#ffff"
-	        android:choiceMode="singleChoice"
-	        android:divider="#e3e3e3"
-	        android:dividerHeight="0.1dp" />
-	</android.support.v4.widget.DrawerLayout>
 
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/drawer_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        android:ems="10" />
+    <android.support.v4.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_alignRight="@+id/button2"
-        android:layout_below="@+id/editText1"
-        android:layout_marginTop="28dp"
-        android:text="Copy to DB" />
+        <!-- Ihre Layout-Elemente oder ein Fragment-Container -->
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Get from DB" />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText1"
-        android:layout_alignRight="@+id/editText1"
-        android:layout_below="@+id/button2"
-        android:layout_marginTop="45dp"
-        android:text="Anzeige"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <ListView
+            android:id="@+id/left_drawer"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="#ffff"
+            android:choiceMode="singleChoice"
+            android:divider="#e3e3e3"
+            android:dividerHeight="0.1dp" />
+    </android.support.v4.widget.DrawerLayout>
 
 </RelativeLayout>
