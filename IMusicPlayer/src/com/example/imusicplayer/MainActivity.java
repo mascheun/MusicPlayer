@@ -45,11 +45,11 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		setContentView(R.layout.activity_main);
+
 		db = new DatabaseClass(this);
 		db.CreatePlayListDatabase();
 		db.addPlayListTable();
-
-		setContentView(R.layout.activity_main);
 
 		mTitle = getTitle();
 
@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
 		
 		setONClickPlayList();
 
-		showSongList(sm.getPlayList());
+		//showSongList(sm.getPlayList());
 
 		// sm.playSong(1, sm.getPlayList());
 
@@ -104,6 +104,7 @@ public class MainActivity extends Activity {
 		case R.id.add_playlist:
 			Toast.makeText(getApplicationContext(),
                     "Add Playlist Clicked",Toast.LENGTH_SHORT).show();
+			showSongList(sm.getPlayList());
 			return true;
 		case R.id.edit_playlist:
 			Toast.makeText(getApplicationContext(),
@@ -224,6 +225,7 @@ public class MainActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String song = (String)parent.getAdapter().getItem(position);
 				sm.playSong(position, sm.getPlayList(), song);
+				showSongs.setVisibility(ListView.INVISIBLE);
 			}
 		});
 	}
