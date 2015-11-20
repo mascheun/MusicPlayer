@@ -155,8 +155,6 @@ public class MainActivity extends Activity {
 	public void initializeAllGuiObjects() {
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-		showSongs = (ListView) findViewById(R.id.songs_drawer);
-		playLists = (ListView) findViewById(R.id.playlist_drawer);
 
 	}
 
