@@ -41,20 +41,22 @@ public final class R {
         public static final int wallpaper_blau=0x7f02000a;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a000d;
-        public static final int add_playlist=0x7f0a000a;
-        public static final int delete_playlist=0x7f0a000c;
+        public static final int action_settings=0x7f0a000f;
         public static final int drawer_layout=0x7f0a0000;
-        public static final int edit_playlist=0x7f0a000b;
-        public static final int icon=0x7f0a0007;
-        public static final int imageButton1=0x7f0a0003;
-        public static final int imageButton2=0x7f0a0004;
-        public static final int imageButton3=0x7f0a0005;
-        public static final int imageButton4=0x7f0a0006;
+        public static final int exit=0x7f0a000e;
+        public static final int icon=0x7f0a0009;
+        public static final int imageButton1=0x7f0a0005;
+        public static final int imageButton2=0x7f0a0006;
+        public static final int imageButton3=0x7f0a0007;
+        public static final int imageButton4=0x7f0a0008;
         public static final int left_drawer=0x7f0a0001;
-        public static final int seekBar1=0x7f0a0002;
-        public static final int subtitle=0x7f0a0009;
-        public static final int title=0x7f0a0008;
+        public static final int playlist_drawer=0x7f0a0003;
+        public static final int playlist_manager=0x7f0a000d;
+        public static final int seekBar1=0x7f0a0004;
+        public static final int song_list=0x7f0a000c;
+        public static final int songs_drawer=0x7f0a0002;
+        public static final int subtitle=0x7f0a000b;
+        public static final int title=0x7f0a000a;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -70,20 +72,23 @@ public final class R {
         public static final int song_list=0x7f090003;
     }
     public static final class string {
-        public static final int action_settings=0x7f05000b;
+        public static final int action_settings=0x7f05000e;
         public static final int add_playlist=0x7f050001;
         public static final int app_name=0x7f050000;
-        public static final int cancel=0x7f050008;
-        public static final int delete_playlist=0x7f050003;
-        public static final int dialog_fire_missiles=0x7f050006;
-        public static final int drawer_close=0x7f050005;
-        public static final int drawer_open=0x7f050004;
+        public static final int cancel=0x7f05000b;
+        public static final int delete_playlist=0x7f050006;
+        public static final int dialog_fire_missiles=0x7f050009;
+        public static final int drawer_close=0x7f050008;
+        public static final int drawer_open=0x7f050007;
         public static final int edit_playlist=0x7f050002;
-        public static final int fire=0x7f050007;
-        public static final int hello_world=0x7f05000a;
-        public static final int title_activity_play_list=0x7f050009;
-        public static final int title_activity_song=0x7f05000c;
-        public static final int title_activity_song_list=0x7f05000d;
+        public static final int exit=0x7f050005;
+        public static final int fire=0x7f05000a;
+        public static final int hello_world=0x7f05000d;
+        public static final int playlist_manager=0x7f050003;
+        public static final int song_list=0x7f050004;
+        public static final int title_activity_play_list=0x7f05000c;
+        public static final int title_activity_song=0x7f05000f;
+        public static final int title_activity_song_list=0x7f050010;
     }
     public static final class style {
         /** 
