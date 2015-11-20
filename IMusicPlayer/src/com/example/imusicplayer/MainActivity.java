@@ -107,11 +107,11 @@ public class MainActivity extends Activity {
 			return true;
 		case R.id.edit_playlist:
 			Toast.makeText(getApplicationContext(),
-                    "Add Playlist Clicked",Toast.LENGTH_SHORT).show();
+                    "Edit Playlist Clicked",Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.delete_playlist:
 			Toast.makeText(getApplicationContext(),
-                    "Add Playlist Clicked",Toast.LENGTH_SHORT).show();
+                    "Close Playlist Clicked",Toast.LENGTH_SHORT).show();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -124,7 +124,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			if (position == 0) {
-
+				
 			} else if (position == 1) {
 
 			} else if (position == 2) {
