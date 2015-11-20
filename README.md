@@ -8,7 +8,7 @@ Funktionen:
 App starten:
 - Songmanager wird angezeigt.
   - Song auswählen -> songbildschirm wird angezeigt.
-    - Stopp, Pause, Play, Vorspulen, Wiederholen, Zufallswiedergabe ect.
+    - Stopp, Pause, Play, Naechstes Lied, Wiederholen, Zufallswiedergabe ect.
 - Menue links oben.
   - Songmanager
     - Mit Suchfunktion.
