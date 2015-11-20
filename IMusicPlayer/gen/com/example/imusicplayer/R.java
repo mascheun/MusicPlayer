@@ -9,9 +9,12 @@ package com.example.imusicplayer;
 
 public final class R {
     public static final class array {
-        public static final int drawerTitles_array=0x7f060000;
+        public static final int drawerTitles_array=0x7f070000;
     }
     public static final class attr {
+    }
+    public static final class color {
+        public static final int UserColor=0x7f060000;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -31,30 +34,34 @@ public final class R {
         public static final int wallpaper_blau=0x7f020003;
     }
     public static final class id {
-        public static final int action_settings=0x7f090007;
-        public static final int drawer_layout=0x7f090000;
-        public static final int icon=0x7f090004;
-        public static final int left_drawer=0x7f090001;
-        public static final int playlist_drawer=0x7f090003;
-        public static final int songs_drawer=0x7f090002;
-        public static final int subtitle=0x7f090006;
-        public static final int title=0x7f090005;
+        public static final int add_playlist=0x7f0a0007;
+        public static final int delete_playlist=0x7f0a0009;
+        public static final int drawer_layout=0x7f0a0000;
+        public static final int edit_playlist=0x7f0a0008;
+        public static final int icon=0x7f0a0004;
+        public static final int left_drawer=0x7f0a0001;
+        public static final int playlist_drawer=0x7f0a0003;
+        public static final int songs_drawer=0x7f0a0002;
+        public static final int subtitle=0x7f0a0006;
+        public static final int title=0x7f0a0005;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int drawer_list_item=0x7f030001;
     }
     public static final class menu {
-        public static final int main=0x7f080000;
+        public static final int main=0x7f090000;
     }
     public static final class string {
-        public static final int action_settings=0x7f050001;
+        public static final int add_playlist=0x7f050001;
         public static final int app_name=0x7f050000;
-        public static final int cancel=0x7f050006;
-        public static final int dialog_fire_missiles=0x7f050004;
-        public static final int drawer_close=0x7f050003;
-        public static final int drawer_open=0x7f050002;
-        public static final int fire=0x7f050005;
+        public static final int cancel=0x7f050008;
+        public static final int delete_playlist=0x7f050003;
+        public static final int dialog_fire_missiles=0x7f050006;
+        public static final int drawer_close=0x7f050005;
+        public static final int drawer_open=0x7f050004;
+        public static final int edit_playlist=0x7f050002;
+        public static final int fire=0x7f050007;
     }
     public static final class style {
         /** 
@@ -78,10 +85,10 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f070000;
+        public static final int AppBaseTheme=0x7f080000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f070001;
+        public static final int AppTheme=0x7f080001;
     }
 }

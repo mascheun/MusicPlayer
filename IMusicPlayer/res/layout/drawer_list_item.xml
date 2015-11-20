@@ -27,7 +27,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:textSize="17sp"
-            android:singleLine="true" />
+            android:singleLine="true"
+        	android:textColor="@color/UserColor"/>
  
         <TextView
             android:id="@+id/subtitle"

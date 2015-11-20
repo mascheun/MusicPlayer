@@ -81,7 +81,9 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+		menu.findItem(R.id.add_playlist).setVisible(!drawerOpen);
+		menu.findItem(R.id.edit_playlist).setVisible(!drawerOpen);
+		menu.findItem(R.id.delete_playlist).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -99,8 +101,17 @@ public class MainActivity extends Activity {
 
 		// Gibt den ActionBar-Buttons Funktionen
 		switch (item.getItemId()) {
-		case R.id.action_settings:
-			Toast.makeText(null, "Aktualisieren gedrückt!", Toast.LENGTH_LONG).show();
+		case R.id.add_playlist:
+			Toast.makeText(getApplicationContext(),
+                    "Add Playlist Clicked",Toast.LENGTH_SHORT).show();
+			return true;
+		case R.id.edit_playlist:
+			Toast.makeText(getApplicationContext(),
+                    "Add Playlist Clicked",Toast.LENGTH_SHORT).show();
+			return true;
+		case R.id.delete_playlist:
+			Toast.makeText(getApplicationContext(),
+                    "Add Playlist Clicked",Toast.LENGTH_SHORT).show();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

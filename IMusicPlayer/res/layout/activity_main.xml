@@ -22,7 +22,7 @@
             android:layout_width="300dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="#ffff"
+            android:background="@drawable/wallpaper_blau"
             android:choiceMode="singleChoice"
             android:divider="#e3e3e3"
             android:dividerHeight="0.1dp" />
