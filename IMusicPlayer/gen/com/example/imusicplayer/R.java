@@ -41,15 +41,20 @@ public final class R {
         public static final int wallpaper_blau=0x7f02000a;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a0008;
-        public static final int add_playlist=0x7f0a0005;
-        public static final int delete_playlist=0x7f0a0007;
+        public static final int action_settings=0x7f0a000d;
+        public static final int add_playlist=0x7f0a000a;
+        public static final int delete_playlist=0x7f0a000c;
         public static final int drawer_layout=0x7f0a0000;
-        public static final int edit_playlist=0x7f0a0006;
-        public static final int icon=0x7f0a0002;
+        public static final int edit_playlist=0x7f0a000b;
+        public static final int icon=0x7f0a0007;
+        public static final int imageButton1=0x7f0a0003;
+        public static final int imageButton2=0x7f0a0004;
+        public static final int imageButton3=0x7f0a0005;
+        public static final int imageButton4=0x7f0a0006;
         public static final int left_drawer=0x7f0a0001;
-        public static final int subtitle=0x7f0a0004;
-        public static final int title=0x7f0a0003;
+        public static final int seekBar1=0x7f0a0002;
+        public static final int subtitle=0x7f0a0009;
+        public static final int title=0x7f0a0008;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
