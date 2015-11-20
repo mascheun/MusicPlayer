@@ -1,16 +1,36 @@
 package com.example.imusicplayer;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
+import database.DatabaseClass;
 
 public class PlayListActivity extends Activity {
+	
+	private ListView playLists;
+	private DatabaseClass db;
+	SongListActivity sla;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_play_list);
+		
+		db = new DatabaseClass(this);
+		sla = new SongListActivity();
+		
+		playLists = (ListView) findViewById(R.id.playlist_drawer);
+		
 	}
 
 	@Override
@@ -30,5 +50,31 @@ public class PlayListActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+
+	// Show all possible PlayLists
+	public void showPlayList() {
+		playLists.setVisibility(ListView.VISIBLE);
+
+		ArrayList<String> allPlayLists = new ArrayList<String>(); // TODO hier
+																	// datenbankabfrage
+																	// einbauen
+		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allPlayLists);
+		playLists.setAdapter(adapter);
+	}
+
+
+
+	// Set on Click Listener from PlayLists
+	public void setONClickPlayList() {
+		playLists.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				String playlist = (String)parent.getAdapter().getItem(position);
+				sla.showSongsFromPlayList(playlist);
+				Intent nextScreen = new Intent(getApplicationContext(), SongListActivity.class);
+				startActivity(nextScreen);
+			}
+		});
 	}
 }

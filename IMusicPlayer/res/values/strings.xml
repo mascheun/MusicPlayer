@@ -4,6 +4,9 @@
     <string name="app_name">IMusicPlayer</string>
     <string name="add_playlist">Add Playlist</string>
     <string name="edit_playlist">Edit Playlist</string>
+    <string name="playlist_manager">PlayList</string>
+    <string name="song_list">Song List</string>
+    <string name="exit">Exit</string>
     <string name="delete_playlist">Delete Playlist</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
