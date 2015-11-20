@@ -1,10 +1,8 @@
 package com.example.imusicplayer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import com.example.imusicplayer.R;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -15,19 +13,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 import database.DatabaseClass;
 import functions.SongsManager;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends Activity {
 
-	private SongsManager sm = new SongsManager();
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -36,16 +28,20 @@ public class MainActivity extends Activity {
 	private String[] drawerSubtitles;
 	private int[] drawerIcons;
 	private DatabaseClass db;
-	Button button;
-	Button button1;
-	ListView showSongs;
-	ListView playLists;
+	private SongsManager sm = new SongsManager();
+	SongListActivity sla;
+	PlayListActivity pla;
+	SongActivity sa;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
+		
+		sla = new SongListActivity();
+		pla = new PlayListActivity();
+		sa = new SongActivity();
 
 		db = new DatabaseClass(this);
 		db.CreatePlayListDatabase();
@@ -59,13 +55,6 @@ public class MainActivity extends Activity {
 
 		createMenue();
 
-		setONClickSong();
-		
-		setONClickPlayList();
-
-		//showSongList(sm.getPlayList());
-
-		// sm.playSong(1, sm.getPlayList());
 
 	}
 
@@ -81,9 +70,9 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		menu.findItem(R.id.add_playlist).setVisible(!drawerOpen);
-		menu.findItem(R.id.edit_playlist).setVisible(!drawerOpen);
-		menu.findItem(R.id.delete_playlist).setVisible(!drawerOpen);
+		menu.findItem(R.id.song_list).setVisible(!drawerOpen);
+		menu.findItem(R.id.playlist_manager).setVisible(!drawerOpen);
+		menu.findItem(R.id.exit).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -101,18 +90,16 @@ public class MainActivity extends Activity {
 
 		// Gibt den ActionBar-Buttons Funktionen
 		switch (item.getItemId()) {
-		case R.id.add_playlist:
-			Toast.makeText(getApplicationContext(),
-                    "Add Playlist Clicked",Toast.LENGTH_SHORT).show();
-			showSongList(sm.getPlayList());
+		case R.id.song_list:
+			Intent songScreen = new Intent(getApplicationContext(), SongListActivity.class);
+			startActivity(songScreen);
 			return true;
-		case R.id.edit_playlist:
-			Toast.makeText(getApplicationContext(),
-                    "Edit Playlist Clicked",Toast.LENGTH_SHORT).show();
+		case R.id.playlist_manager:
+			Intent playListScreen = new Intent(getApplicationContext(), SongListActivity.class);
+			startActivity(playListScreen);
 			return true;
-		case R.id.delete_playlist:
-			Toast.makeText(getApplicationContext(),
-                    "Close Playlist Clicked",Toast.LENGTH_SHORT).show();
+		case R.id.exit:
+
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -125,7 +112,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			if (position == 0) {
-				
+
 			} else if (position == 1) {
 
 			} else if (position == 2) {
@@ -191,62 +178,5 @@ public class MainActivity extends Activity {
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
 
-	// Show all possible Songs
-	public void showSongList(ArrayList<HashMap<String, String>> allSongListHash) {
-
-		ArrayList<String> allSongList = new ArrayList<String>();
-
-		for (HashMap<String, String> hm : allSongListHash) {
-			allSongList.add(hm.get("songTitle"));
-		}
-
-		showSongs.setVisibility(ListView.VISIBLE);
-
-		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allSongList);
-		showSongs.setAdapter(adapter);
-	}
-
-	// Show all possible PlayLists
-	public void showPlayList() {
-		playLists.setVisibility(ListView.VISIBLE);
-
-		ArrayList<String> allPlayLists = new ArrayList<String>(); // TODO hier
-																	// datenbankabfrage
-																	// einbauen
-		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allPlayLists);
-		playLists.setAdapter(adapter);
-	}
-
-	// Set on Click Listener from Songs
-	public void setONClickSong() {
-		showSongs.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				String song = (String)parent.getAdapter().getItem(position);
-				sm.playSong(position, sm.getPlayList(), song);
-				showSongs.setVisibility(ListView.INVISIBLE);
-			}
-		});
-	}
-
-	// Set on Click Listener from PlayLists
-	public void setONClickPlayList() {
-		playLists.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				String playlist = (String)parent.getAdapter().getItem(position);
-				playLists.setVisibility(ListView.INVISIBLE);
-				showSongList(playlist);
-			}
-		});
-	}
-
-	// Shows songs from PlayList
-	public void showSongList(String playlist) {
-
-		showSongs.setVisibility(ListView.VISIBLE);
-		ArrayList<String> allSongList = db.showSongInPlaylist(playlist);
-
-		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allSongList);
-		showSongs.setAdapter(adapter);
-	}
 
 }

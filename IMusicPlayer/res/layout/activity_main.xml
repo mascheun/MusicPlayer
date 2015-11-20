@@ -22,10 +22,34 @@
             android:layout_width="300dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="#ffff"
+            android:background="@drawable/wallpaper_blau"
             android:choiceMode="singleChoice"
             android:divider="#e3e3e3"
             android:dividerHeight="0.1dp" />
+        
+		<ListView
+		    android:id="@+id/songs_drawer"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_alignTop="@+id/drawer_layout"
+		    android:layout_centerHorizontal="true"
+		    android:background="@drawable/wallpaper_blau"
+		    android:choiceMode="singleChoice"
+		    android:divider="#e3e3e3"
+		    android:dividerHeight="0.1dp"
+		    android:visibility="invisible" />
+		
+		<ListView
+		    android:id="@+id/playlist_drawer"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_alignTop="@+id/drawer_layout"
+		    android:layout_centerHorizontal="true"
+		    android:background="@drawable/wallpaper_blau"
+		    android:choiceMode="singleChoice"
+		    android:divider="#e3e3e3"
+		    android:dividerHeight="0.1dp"
+		    android:visibility="invisible" />
         
     </android.support.v4.widget.DrawerLayout>
 
