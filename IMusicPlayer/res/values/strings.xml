@@ -10,9 +10,10 @@
     <string name="delete_playlist">Delete Playlist</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="dialog_fire_missiles">Fire missiles?</string>
-    <string name="fire">Fire</string>
-    <string name="cancel">Cancel</string>
+    <string name="description1">Play music</string>
+    <string name="description2">Next track</string>
+    <string name="description3">Previous Track</string>
+    <string name="description4">Stop</string>
 
     <color name="UserColor">#FFFFFF</color>
 
