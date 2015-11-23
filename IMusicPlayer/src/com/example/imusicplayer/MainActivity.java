@@ -1,6 +1,5 @@
 package com.example.imusicplayer;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -38,7 +37,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
-		
+
 		sla = new SongListActivity();
 		pla = new PlayListActivity();
 		sa = new SongActivity();
@@ -54,7 +53,6 @@ public class MainActivity extends Activity {
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
 		createMenue();
-
 
 	}
 
@@ -138,7 +136,7 @@ public class MainActivity extends Activity {
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
-	//Initialize all GUI Objects
+	// Initialize all GUI Objects
 	public void initializeAllGuiObjects() {
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -177,6 +175,5 @@ public class MainActivity extends Activity {
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
-
 
 }
