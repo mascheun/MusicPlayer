@@ -93,11 +93,14 @@ public class MainActivity extends Activity {
 			startActivity(songScreen);
 			return true;
 		case R.id.playlist_manager:
-			Intent playListScreen = new Intent(getApplicationContext(), SongListActivity.class);
+			Intent playListScreen = new Intent(getApplicationContext(), PlayListActivity.class);
 			startActivity(playListScreen);
 			return true;
 		case R.id.exit:
-
+			sla.finish();
+			pla.finish();
+			sa.finish();
+			finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
