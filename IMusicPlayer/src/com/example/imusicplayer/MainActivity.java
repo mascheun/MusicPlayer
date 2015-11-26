@@ -27,7 +27,6 @@ public class MainActivity extends Activity {
 	private String[] drawerSubtitles;
 	private int[] drawerIcons;
 	private DatabaseClass db;
-	private SongsManager sm = new SongsManager();
 	SongListActivity sla;
 	PlayListActivity pla;
 	SongActivity sa;
@@ -68,6 +67,7 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+		menu.findItem(R.id.songs_drawer).setVisible(!drawerOpen);
 		menu.findItem(R.id.song_list).setVisible(!drawerOpen);
 		menu.findItem(R.id.playlist_manager).setVisible(!drawerOpen);
 		menu.findItem(R.id.exit).setVisible(!drawerOpen);
@@ -88,9 +88,13 @@ public class MainActivity extends Activity {
 
 		// Gibt den ActionBar-Buttons Funktionen
 		switch (item.getItemId()) {
-		case R.id.song_list:
-			Intent songScreen = new Intent(getApplicationContext(), SongListActivity.class);
+		case R.id.songs_drawer:
+			Intent songScreen = new Intent(getApplicationContext(), SongActivity.class);
 			startActivity(songScreen);
+			return true;
+		case R.id.song_list:
+			Intent songListScreen = new Intent(getApplicationContext(), SongListActivity.class);
+			startActivity(songListScreen);
 			return true;
 		case R.id.playlist_manager:
 			Intent playListScreen = new Intent(getApplicationContext(), PlayListActivity.class);
