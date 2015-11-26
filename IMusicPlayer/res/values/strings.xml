@@ -14,6 +14,9 @@
     <string name="description2">Next track</string>
     <string name="description3">Previous Track</string>
     <string name="description4">Stop</string>
+    <string name="description5">Shuffle</string>
+    <string name="description6">Replay</string>
+    
 
     <color name="UserColor">#FFFFFF</color>
 

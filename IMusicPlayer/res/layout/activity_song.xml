@@ -1,12 +1,68 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.imusicplayer.SongActivity" >
+    android:background="@drawable/wallpaper_blau" >
 
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="220dp"
+        android:layout_y="394dp"
+        android:src="@drawable/next_track_icon" 
+        android:contentDescription="@string/description2"/>
 
-</RelativeLayout>
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="165dp"
+        android:layout_y="394dp"
+        android:src="@drawable/play_icon" 
+        android:contentDescription="@string/description1"/>
+
+    <ImageButton
+        android:id="@+id/imageButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="110dp"
+        android:layout_y="394dp"
+        android:src="@drawable/prev_track_icon" 
+        android:contentDescription="@string/description3"/>
+
+    <ImageButton
+        android:id="@+id/imageButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="16dp"
+        android:layout_y="394dp"
+        android:src="@drawable/stop_icon" 
+        android:contentDescription="@string/description4"/>
+
+    <SeekBar
+        android:id="@+id/seekBar1"
+        android:layout_width="262dp"
+        android:layout_height="wrap_content"
+        android:layout_x="30dp"
+        android:layout_y="352dp" />
+
+    <ImageButton
+        android:id="@+id/imageButton6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="62dp"
+        android:layout_y="287dp"
+        android:src="@drawable/shuffle_icon" 
+        android:contentDescription="@string/description5"/>
+
+    <ImageButton
+        android:id="@+id/imageButton5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_x="195dp"
+        android:layout_y="287dp"
+        android:src="@drawable/replay_icon" 
+        android:contentDescription="@string/description6"/>
+
+</AbsoluteLayout>
