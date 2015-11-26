@@ -24,7 +24,9 @@
     </string-array>
 
     <string name="title_activity_play_list">PlayListActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="playlist_name">Name of Playlist:</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_song">SongActivity</string>
     <string name="title_activity_song_list">SongListActivity</string>

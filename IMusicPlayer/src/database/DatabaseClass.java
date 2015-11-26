@@ -11,9 +11,7 @@ public class DatabaseClass {
 	Activity activ;
 	
 	public DatabaseClass(Activity activ) {
-		
 		this.activ = activ;
-		
 	}
 	
 	SQLiteDatabase playListDatabase;
@@ -33,7 +31,6 @@ public class DatabaseClass {
 	
 	//Add the PlayList name in the Playlist Table and create a new Table for the playlist
 	public void addPlayList(String playlist) {
-    	System.out.println("AddedDatabase: " + playlist );
 		playListDatabase.execSQL("INSERT INTO PlayList VALUES('" + playlist + "');");
 		playListDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + playlist + " (name VARCHAR);");
 	}
