@@ -2,8 +2,6 @@ package functions;
 
 import java.util.List;
 
-import com.example.imusicplayer.MainActivity;
-import com.example.imusicplayer.PlayListActivity;
 import com.example.imusicplayer.R;
 
 import android.content.Context;
