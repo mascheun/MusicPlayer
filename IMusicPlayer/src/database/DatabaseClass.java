@@ -35,6 +35,12 @@ public class DatabaseClass {
 		playListDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + playlist + " (name VARCHAR);");
 	}
 	
+	//delete the PlayList name in the Playlist Table and delete the Table for the playlist
+	public void deletePlayList(String playlist) {
+		playListDatabase.execSQL("DELETE FROM PlayList WHERE name = '" + playlist + "';");
+		playListDatabase.execSQL("DROP TABLE " + playlist + ";");
+	}
+	
 //	public void addSong(String name) {
 //		songDatabase.execSQL("CREATE TABLE IF NOT EXISTS "+ name + " (song VARCHAR);");
 //	}

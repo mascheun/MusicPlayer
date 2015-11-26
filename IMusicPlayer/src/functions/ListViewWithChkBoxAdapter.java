@@ -42,13 +42,23 @@ public class ListViewWithChkBoxAdapter extends ArrayAdapter<Item> {
 			holder.itemName = (TextView) v.findViewById(R.id.deletePlTv);
 			holder.chkBox = (CheckBox) v.findViewById(R.id.chk_box);
 			v.setTag(holder);
+			holder.chkBox.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					CheckBox cb = (CheckBox) v;
+					Item item = (Item) cb.getTag();
+					System.out.println(item.getName());
+					System.out.println(item.isSelected());
+					item.setSelected(cb.isChecked());
+					System.out.println(item.isSelected());
+				}
+			});
 
 		} else {
 			holder = (itemHolder) v.getTag();
 		}
 
 		Item p = itemList.get(position);
-//		holder.itemName.setText(p.getName());
+		// holder.itemName.setText(p.getName());
 		holder.chkBox.setText(p.getName());
 		holder.chkBox.setChecked(p.isSelected());
 		holder.chkBox.setTag(p);

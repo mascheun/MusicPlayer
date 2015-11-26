@@ -39,6 +39,8 @@ public class PlayListActivity extends Activity {
 	private ListViewWithChkBoxAdapter lvAdapter;
 	private ListView playListsForDeleting;
 
+	private ArrayList<Item> itemList = new ArrayList<Item>();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,6 +58,8 @@ public class PlayListActivity extends Activity {
 		editPL = (RelativeLayout) findViewById(R.id.EditPlayListView);
 		addPlOk = (Button) findViewById(R.id.buttonOkAdd);
 		addPlCancel = (Button) findViewById(R.id.buttonCancelAdd);
+		deletePlOk = (Button) findViewById(R.id.delete_pl);
+		deletePlCancel = (Button) findViewById(R.id.cancel_delete);
 		writePlName = (EditText) findViewById(R.id.editTextPlName);
 		playListsForDeleting = (ListView) findViewById(R.id.delete_pl_view);
 
@@ -113,7 +117,7 @@ public class PlayListActivity extends Activity {
 		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allPlayLists);
 		playLists.setAdapter(adapter);
 	}
-	
+
 	// Show all possible PlayLists for deleting
 	public void showPlayListToDelete() {
 		playListsForDeleting.setVisibility(ListView.VISIBLE);
@@ -121,9 +125,9 @@ public class PlayListActivity extends Activity {
 		ArrayList<String> allPlayLists = new ArrayList<String>();
 
 		allPlayLists = db.showPlayLists();
-		ArrayList<Item> itemList = new ArrayList<Item>();
-		
-		for(String plName : allPlayLists) {
+		itemList = new ArrayList<Item>();
+
+		for (String plName : allPlayLists) {
 			itemList.add(new Item(plName));
 		}
 
@@ -146,7 +150,7 @@ public class PlayListActivity extends Activity {
 			public void onClick(View v) {
 				String plName = "";
 				plName = writePlName.getText().toString();
-				writePlName.clearComposingText();
+				writePlName.setText("");
 				db.addPlayList(plName); // TODO schauen ob PL mit diesem namen
 										// schon existiert
 				addPL.setVisibility(RelativeLayout.INVISIBLE);
@@ -157,7 +161,28 @@ public class PlayListActivity extends Activity {
 
 		addPlCancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				writePlName.setText("");
 				addPL.setVisibility(RelativeLayout.INVISIBLE);
+				homePL.setVisibility(RelativeLayout.VISIBLE);
+			}
+		});
+
+		deletePlOk.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				for (Item item : itemList) {
+					if (item.isSelected()) {
+						db.deletePlayList(item.getName());
+					}
+				}
+				deletePL.setVisibility(RelativeLayout.INVISIBLE);
+				homePL.setVisibility(RelativeLayout.VISIBLE);
+				showPlayList();
+			}
+		});
+
+		deletePlCancel.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				deletePL.setVisibility(RelativeLayout.INVISIBLE);
 				homePL.setVisibility(RelativeLayout.VISIBLE);
 			}
 		});
