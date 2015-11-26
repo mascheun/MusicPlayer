@@ -72,7 +72,9 @@ public class DatabaseClass {
         String selectQuery = "SELECT * FROM " + playlist + ";";
         
         Cursor cursor =  playListDatabase.rawQuery(selectQuery, null);
-        
+        if (cursor == null) {
+			return songs;
+		}
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {

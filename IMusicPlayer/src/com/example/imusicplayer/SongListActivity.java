@@ -38,9 +38,21 @@ public class SongListActivity extends Activity {
 
 		showSongs = (ListView) findViewById(R.id.songs_drawer);
 
-		showSongList();
-
 		setONClickSong();
+		
+		Bundle b = getIntent().getExtras();
+		int mode = b.getInt(Constants.MODE);
+		switch (mode) {
+		case 1:
+			showSongList();
+			break;
+		case 2:
+			String pl = b.getString(Constants.PLAYLISTKEY);
+			showSongsFromPlayList(b.getString(pl));
+			break;
+		default:
+			break;
+		}
 
 	}
 
@@ -81,6 +93,9 @@ public class SongListActivity extends Activity {
 	// Shows songs from PlayList
 	public void showSongsFromPlayList(String playlist) {
 		songList = new ArrayList<String>();
+		if(playlist == null) {
+			return;
+		}
 		songList = db.showSongInPlaylist(playlist);
 	}
 

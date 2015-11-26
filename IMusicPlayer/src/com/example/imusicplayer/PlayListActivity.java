@@ -140,9 +140,13 @@ public class PlayListActivity extends Activity {
 		playLists.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String playlist = (String) parent.getAdapter().getItem(position);
-				sla.showSongsFromPlayList(playlist);
 				Intent nextScreen = new Intent(getApplicationContext(), SongListActivity.class);
+				Bundle b = new Bundle();
+				b.putInt(Constants.MODE, Constants.SONGSFROMPLAYLIST); //Your id
+				b.putString(Constants.PLAYLISTKEY, playlist);
+				nextScreen.putExtras(b); //Put your id to your next Intent
 				startActivity(nextScreen);
+				finish();
 			}
 		});
 

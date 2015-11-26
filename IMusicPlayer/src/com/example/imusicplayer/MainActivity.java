@@ -89,6 +89,9 @@ public class MainActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.song_list:
 			Intent songListScreen = new Intent(getApplicationContext(), SongListActivity.class);
+			Bundle b = new Bundle();
+			b.putInt(Constants.MODE, Constants.REGULARSONG); //Your id
+			songListScreen.putExtras(b); //Put your id to your next Intent
 			startActivity(songListScreen);
 			return true;
 		case R.id.playlist_manager:
