@@ -67,7 +67,6 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		menu.findItem(R.id.songs_drawer).setVisible(!drawerOpen);
 		menu.findItem(R.id.song_list).setVisible(!drawerOpen);
 		menu.findItem(R.id.playlist_manager).setVisible(!drawerOpen);
 		menu.findItem(R.id.exit).setVisible(!drawerOpen);
@@ -88,10 +87,6 @@ public class MainActivity extends Activity {
 
 		// Gibt den ActionBar-Buttons Funktionen
 		switch (item.getItemId()) {
-		case R.id.songs_drawer:
-			Intent songScreen = new Intent(getApplicationContext(), SongActivity.class);
-			startActivity(songScreen);
-			return true;
 		case R.id.song_list:
 			Intent songListScreen = new Intent(getApplicationContext(), SongListActivity.class);
 			startActivity(songListScreen);
@@ -116,14 +111,6 @@ public class MainActivity extends Activity {
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			if (position == 0) {
-
-			} else if (position == 1) {
-
-			} else if (position == 2) {
-
-			}
-
 			mDrawerList.setItemChecked(position, true);
 			mTitle = drawerTitles[position];
 			getActionBar().setTitle(mTitle);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -89,6 +90,8 @@ public class SongListActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String song = (String) parent.getAdapter().getItem(position);
 				sm.playSong(position, sm.getPlayList(), song);
+				Intent songScreen = new Intent(getApplicationContext(), SongActivity.class);
+				startActivity(songScreen);
 			}
 		});
 	}
