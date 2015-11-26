@@ -46,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/textView1"
             android:ems="10" />
 
@@ -54,6 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/editTextPlName"
             android:text="@string/ok" />
 
@@ -63,39 +65,44 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/buttonOkAdd"
             android:layout_alignBottom="@+id/buttonOkAdd"
+            android:layout_alignEnd="@+id/textView1"
             android:layout_alignRight="@+id/textView1"
             android:text="@string/cancel" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/DeletePlayListView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@drawable/wallpaper_blau"
+        android:orientation="vertical"
         android:visibility="invisible" >
 
         <ListView
             android:id="@+id/delete_pl_view"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="start"
-            android:background="@drawable/wallpaper_blau"
-            android:choiceMode="singleChoice"
-            android:divider="#e3e3e3"
-            android:dividerHeight="0.1dp" />
+            android:layout_height="0dp"
+            android:layout_weight="0.83"
+            android:background="@drawable/wallpaper_blau" />
 
-        <TextView
-            android:id="@+id/deletePlTv"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:orientation="horizontal" >
 
-        <CheckBox
-            android:id="@+id/chk_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/deletePlTv" />
-    </RelativeLayout>
+            <Button
+                android:id="@+id/delete_pl"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/delete" />
+
+            <Button
+                android:id="@+id/cancel_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/cancel" />
+        </LinearLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/EditPlayListView"

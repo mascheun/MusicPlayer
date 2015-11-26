@@ -14,47 +14,47 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+public class ListViewWithChkBoxAdapter extends ArrayAdapter<Item> {
 
-public class ListViewWithChkBoxAdapter extends ArrayAdapter<Item>{
-	
 	private List<Item> itemList;
 	private Context context;
-	
+
 	public ListViewWithChkBoxAdapter(List<Item> itemList, Context context) {
-		super(context, R.layout.single_listview_item, itemList);
+		super(context, R.layout.playlist_info, itemList);
 		this.itemList = itemList;
 		this.context = context;
 	}
 
-	private static class itemHolder {
+	private class itemHolder {
 		public TextView itemName;
 		public CheckBox chkBox;
 	}
-	
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-	
+
 		View v = convertView;
-		
+
 		itemHolder holder = new itemHolder();
-		
-		if(convertView == null) {
-			
+
+		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = inflater.inflate(R.layout.single_listview_item, null);
-			
+			v = inflater.inflate(R.layout.playlist_info, null);
+
 			holder.itemName = (TextView) v.findViewById(R.id.deletePlTv);
 			holder.chkBox = (CheckBox) v.findViewById(R.id.chk_box);
-			
+			v.setTag(holder);
+
 		} else {
 			holder = (itemHolder) v.getTag();
 		}
-		
+
 		Item p = itemList.get(position);
-		holder.itemName.setText(p.getName());
+//		holder.itemName.setText(p.getName());
+		holder.chkBox.setText(p.getName());
 		holder.chkBox.setChecked(p.isSelected());
 		holder.chkBox.setTag(p);
-		
+
 		return v;
 	}
 

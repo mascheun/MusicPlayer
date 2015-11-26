@@ -16,7 +16,6 @@
     <string name="description4">Stop</string>
     <string name="description5">Shuffle</string>
     <string name="description6">Replay</string>
-    
 
     <color name="UserColor">#FFFFFF</color>
 
@@ -30,6 +29,7 @@
     <string name="playlist_name">Name of Playlist:</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_song">SongActivity</string>
     <string name="title_activity_song_list">SongListActivity</string>

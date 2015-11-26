@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -28,7 +29,7 @@ public class PlayListActivity extends Activity {
 	private SongListActivity sla;
 	private RelativeLayout homePL;
 	private RelativeLayout addPL;
-	private RelativeLayout deletePL;
+	private LinearLayout deletePL;
 	private RelativeLayout editPL;
 	private Button addPlOk;
 	private Button addPlCancel;
@@ -51,7 +52,7 @@ public class PlayListActivity extends Activity {
 		playLists = (ListView) findViewById(R.id.playlist_drawer);
 		homePL = (RelativeLayout) findViewById(R.id.HomePlayListView);
 		addPL = (RelativeLayout) findViewById(R.id.AddPlayListView);
-		deletePL = (RelativeLayout) findViewById(R.id.DeletePlayListView);
+		deletePL = (LinearLayout) findViewById(R.id.DeletePlayListView);
 		editPL = (RelativeLayout) findViewById(R.id.EditPlayListView);
 		addPlOk = (Button) findViewById(R.id.buttonOkAdd);
 		addPlCancel = (Button) findViewById(R.id.buttonCancelAdd);
