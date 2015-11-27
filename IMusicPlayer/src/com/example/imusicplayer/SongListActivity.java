@@ -22,7 +22,6 @@ public class SongListActivity extends Activity {
 	private SongsManager sm;
 	private ListView showSongs;
 	private DatabaseClass db;
-	ArrayList<String> songList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +31,6 @@ public class SongListActivity extends Activity {
 		db = new DatabaseClass(this);
 
 		sm = new SongsManager();
-		songList = new ArrayList<String>();
-
-		fillAllSongsInList();
-
 		showSongs = (ListView) findViewById(R.id.songs_drawer);
 
 		setONClickSong();
@@ -48,7 +43,7 @@ public class SongListActivity extends Activity {
 			break;
 		case 2:
 			String pl = b.getString(Constants.PLAYLISTKEY);
-			showSongsFromPlayList(b.getString(pl));
+			showSongsFromPlayList(pl);
 			break;
 		default:
 			break;
@@ -75,28 +70,35 @@ public class SongListActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void fillAllSongsInList() {
+	public ArrayList<String> fillAllSongsInList() {
 		ArrayList<HashMap<String, String>> allSongList = sm.getPlayList();
-		songList = new ArrayList<String>();
+		ArrayList<String> songList = new ArrayList<String>();
 
 		for (HashMap<String, String> hm : allSongList) {
 			songList.add(hm.get("songTitle"));
 		}
+		return songList;
 	}
 
 	// Show all possible Songs
 	public void showSongList() {
+		ArrayList<String> songList = new ArrayList<String>();
+		songList.addAll(fillAllSongsInList());
 		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
 		showSongs.setAdapter(adapter);
 	}
 
 	// Shows songs from PlayList
 	public void showSongsFromPlayList(String playlist) {
-		songList = new ArrayList<String>();
+		ArrayList<String> songList = new ArrayList<String>();
 		if(playlist == null) {
 			return;
 		}
-		songList = db.showSongInPlaylist(playlist);
+		System.out.println("Test111");
+		songList.addAll(db.showSongInPlaylist(playlist));
+		System.out.println("Test222");
+		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
+		showSongs.setAdapter(adapter);
 	}
 
 	// Set on Click Listener from Songs

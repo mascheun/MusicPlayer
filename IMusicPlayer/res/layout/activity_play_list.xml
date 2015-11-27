@@ -71,7 +71,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/DeletePlayListView"
+        android:id="@+id/WithCBView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@drawable/wallpaper_blau"
@@ -91,13 +91,13 @@
             android:orientation="horizontal" >
 
             <Button
-                android:id="@+id/delete_pl"
+                android:id="@+id/cb_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:text="@string/delete" />
+                android:text="@string/ok" />
 
             <Button
-                android:id="@+id/cancel_delete"
+                android:id="@+id/cb_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:text="@string/cancel" />
@@ -121,5 +121,44 @@
             android:divider="#e3e3e3"
             android:dividerHeight="0.1dp" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/PlayListConfigView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/wallpaper_blau"
+        android:orientation="vertical"
+        android:visibility="invisible" >
+
+        <ListView
+            android:id="@+id/songs_in_cofig_pl"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.83"
+            android:background="@drawable/wallpaper_blau" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/add_song"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/add" />
+
+            <Button
+                android:id="@+id/delete_song"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/delete" />
+            <Button
+                android:id="@+id/cancel_config"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/cancel" />
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
