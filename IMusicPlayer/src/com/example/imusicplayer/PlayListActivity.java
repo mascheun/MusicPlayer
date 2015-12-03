@@ -210,7 +210,6 @@ public class PlayListActivity extends Activity {
 				Intent nextScreen = new Intent(getApplicationContext(), SongListActivity.class);
 				Bundle b = new Bundle();
 				b.putInt(Constants.MODE, Constants.SONGSFROMPLAYLIST); //Your id
-				System.out.println(playlist);
 				b.putString(Constants.PLAYLISTKEY, playlist);
 				nextScreen.putExtras(b); //Put your id to your next Intent
 				startActivity(nextScreen);

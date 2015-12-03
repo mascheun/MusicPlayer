@@ -66,11 +66,8 @@ public class SongsManager {
 
 	/**
 	 * Function to play a song
-	 * 
-	 * @param songIndex
-	 *            - index of song
 	 */
-	public void playSong(int songIndex, ArrayList<HashMap<String, String>> songsList, String songname) {
+	public void playSong(ArrayList<HashMap<String, String>> songsList, String songname) {
 		// Play song
 		try {
 			mp.reset();
@@ -83,7 +80,6 @@ public class SongsManager {
 			}
 			mp.setDataSource(songPath);
 			mp.prepare();
-			mp.start();
 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -92,5 +88,13 @@ public class SongsManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void startSong() {
+		mp.start();
+	}
+	
+	public void stopSong() {
+		mp.pause();
 	}
 }

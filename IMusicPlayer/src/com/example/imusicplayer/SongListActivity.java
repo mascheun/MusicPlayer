@@ -109,8 +109,10 @@ public class SongListActivity extends Activity {
 		showSongs.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String song = (String) parent.getAdapter().getItem(position);
-				sm.playSong(position, sm.getPlayList(), song);
+				Bundle b = new Bundle();
+				b.putString(Constants.SONGKEY, song);
 				Intent songScreen = new Intent(getApplicationContext(), SongActivity.class);
+				songScreen.putExtras(b);
 				startActivity(songScreen);
 			}
 		});
