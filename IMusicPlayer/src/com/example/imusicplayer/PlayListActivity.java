@@ -168,7 +168,6 @@ public class PlayListActivity extends Activity {
 	}
 	
 	private void showDeleteSongFromPlayList(String playlist) {
-		//TODO
 		ArrayList<String> songList = new ArrayList<String>();
 		songList.addAll(db.showSongInPlaylist(playlist));
 		itemList = new ArrayList<Item>();
@@ -235,8 +234,7 @@ public class PlayListActivity extends Activity {
 				String plName = "";
 				plName = writePlName.getText().toString();
 				writePlName.setText("");
-				db.addPlayList(plName); // TODO schauen ob PL mit diesem namen
-										// schon existiert
+				db.addPlayList(plName);
 				addPL.setVisibility(RelativeLayout.INVISIBLE);
 				homePL.setVisibility(RelativeLayout.VISIBLE);
 				showPlayList(playLists);

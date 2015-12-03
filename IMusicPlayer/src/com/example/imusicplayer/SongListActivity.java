@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -20,7 +22,12 @@ import functions.SongsManager;
 public class SongListActivity extends Activity {
 
 	private SongsManager sm;
+	private ArrayList<String> songList;
+	
 	private ListView showSongs;
+	private Button searchBt;
+	private EditText searchText;
+	
 	private DatabaseClass db;
 
 	@Override
@@ -32,8 +39,10 @@ public class SongListActivity extends Activity {
 
 		sm = new SongsManager();
 		showSongs = (ListView) findViewById(R.id.songs_drawer);
+		searchBt = (Button) findViewById(R.id.bt_search);
+		searchText = (EditText) findViewById(R.id.edit_text_song_search);
 
-		setONClickSong();
+		setONClick();
 		
 		Bundle b = getIntent().getExtras();
 		int mode = b.getInt(Constants.MODE);
@@ -53,16 +62,12 @@ public class SongListActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.song_list, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
@@ -70,45 +75,55 @@ public class SongListActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public ArrayList<String> fillAllSongsInList() {
+	// Show all possible Songs
+	public void showSongList() {
 		ArrayList<HashMap<String, String>> allSongList = sm.getPlayList();
-		ArrayList<String> songList = new ArrayList<String>();
+		songList = new ArrayList<String>();
 
 		for (HashMap<String, String> hm : allSongList) {
 			songList.add(hm.get("songTitle"));
 		}
-		return songList;
-	}
-
-	// Show all possible Songs
-	public void showSongList() {
-		ArrayList<String> songList = new ArrayList<String>();
-		songList.addAll(fillAllSongsInList());
 		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
 		showSongs.setAdapter(adapter);
 	}
 
 	// Shows songs from PlayList
 	public void showSongsFromPlayList(String playlist) {
-		ArrayList<String> songList = new ArrayList<String>();
+		songList = new ArrayList<String>();
 		if(playlist == null) {
 			return;
 		}
-		System.out.println("Test111");
 		songList.addAll(db.showSongInPlaylist(playlist));
-		System.out.println("Test222");
 		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
+		showSongs.setAdapter(adapter);
+	}
+	
+	//Shows searched songs
+	public void showSearchedSongs(ArrayList<String> searchedSongs) {
+		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, searchedSongs);
 		showSongs.setAdapter(adapter);
 	}
 
 	// Set on Click Listener from Songs
-	public void setONClickSong() {
+	public void setONClick() {
 		showSongs.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String song = (String) parent.getAdapter().getItem(position);
 				sm.playSong(position, sm.getPlayList(), song);
 				Intent songScreen = new Intent(getApplicationContext(), SongActivity.class);
 				startActivity(songScreen);
+			}
+		});
+		searchBt.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				ArrayList<String> searchedSongs = new ArrayList<String>();
+				for(String song : songList) {
+					if(song.contains(searchText.getText().toString())) {
+						searchedSongs.add(song);
+					}
+				}
+				searchText.setText("");
+				showSearchedSongs(searchedSongs);
 			}
 		});
 	}

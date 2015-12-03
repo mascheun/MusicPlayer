@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import database.DatabaseClass;
-import functions.SongsManager;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends Activity {
