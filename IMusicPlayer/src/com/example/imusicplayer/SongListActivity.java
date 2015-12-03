@@ -28,7 +28,7 @@ public class SongListActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_song_list);
 
-		db = new DatabaseClass(this);
+		db = DatabaseClass.getInstance();
 
 		sm = new SongsManager();
 		showSongs = (ListView) findViewById(R.id.songs_drawer);

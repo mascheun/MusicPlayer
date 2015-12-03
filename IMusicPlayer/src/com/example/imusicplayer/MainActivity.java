@@ -41,10 +41,11 @@ public class MainActivity extends Activity {
 		pla = new PlayListActivity();
 		sa = new SongActivity();
 
-		db = new DatabaseClass(this);
+		db = DatabaseClass.getInstance();
+		db.setActivity(this);
 		db.CreatePlayListDatabase();
 		db.addPlayListTable();
-
+		
 		mTitle = getTitle();
 
 		initializeAllGuiObjects();

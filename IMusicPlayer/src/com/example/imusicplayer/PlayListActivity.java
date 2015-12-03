@@ -56,7 +56,7 @@ public class PlayListActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_play_list);
 
-		db = new DatabaseClass(this);
+		db = DatabaseClass.getInstance();
 		db.CreatePlayListDatabase();
 		db.addPlayListTable();
 		
@@ -83,10 +83,6 @@ public class PlayListActivity extends Activity {
 		
 		writePlName = (EditText) findViewById(R.id.editTextPlName);
 		viewWithCheckbock = (ListView) findViewById(R.id.delete_pl_view);
-		
-
-		// deletePlOk;
-		// deletePlCancel;
 
 		setONClickListener();
 		showPlayList(playLists);
@@ -173,17 +169,17 @@ public class PlayListActivity extends Activity {
 	
 	private void showDeleteSongFromPlayList(String playlist) {
 		//TODO
-//		ArrayList<String> songList = new ArrayList<String>();
-//		songList.addAll(fillAllSongsInList());
-//		itemList = new ArrayList<Item>();
-//
-//		for (String songName : songList) {
-//			itemList.add(new Item(songName));
-//		}
-//
-//		lvAdapter = new ListViewWithChkBoxAdapter(itemList, this);
-//		viewWithCheckbock.setAdapter(lvAdapter);
-//		mode = Constants.MODEDELETESONGFROMPL;
+		ArrayList<String> songList = new ArrayList<String>();
+		songList.addAll(db.showSongInPlaylist(playlist));
+		itemList = new ArrayList<Item>();
+
+		for (String songName : songList) {
+			itemList.add(new Item(songName));
+		}
+
+		lvAdapter = new ListViewWithChkBoxAdapter(itemList, this);
+		viewWithCheckbock.setAdapter(lvAdapter);
+		mode = Constants.MODEDELETESONGFROMPL;
 	}
 	
 	// Shows songs from PlayList
@@ -263,13 +259,13 @@ public class PlayListActivity extends Activity {
 			}
 		});
 		
-//		daaddPlCancel.setOnClickListener(new View.OnClickListener() {
-//			public void onClick(View v) {
-//				writePlName.setText("");
-//				addPL.setVisibility(RelativeLayout.INVISIBLE);
-//				homePL.setVisibility(RelativeLayout.VISIBLE);
-//			}
-//		});
+		confPlDeleteSong.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				showDeleteSongFromPlayList(editedPl);
+				plConfig.setVisibility(LinearLayout.INVISIBLE);
+				withCbView.setVisibility(RelativeLayout.VISIBLE);
+			}
+		});
 		
 		confPlCancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -307,7 +303,7 @@ public class PlayListActivity extends Activity {
 				case 3:
 					for (Item item : itemList) {
 						if (item.isSelected()) {
-							db.deletePlayList(item.getName());
+							db.deleteSongFromPlayList(editedPl, item.getName());
 						}
 					}
 					withCbView.setVisibility(RelativeLayout.INVISIBLE);
