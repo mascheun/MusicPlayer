@@ -28,7 +28,6 @@ public class MainActivity extends Activity {
 	private DatabaseClass db;
 	SongListActivity sla;
 	PlayListActivity pla;
-	SongActivity sa;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,6 @@ public class MainActivity extends Activity {
 
 		sla = new SongListActivity();
 		pla = new PlayListActivity();
-		sa = new SongActivity();
 
 		db = DatabaseClass.getInstance();
 		db.setActivity(this);
@@ -101,7 +99,6 @@ public class MainActivity extends Activity {
 		case R.id.exit:
 			sla.finish();
 			pla.finish();
-			sa.finish();
 			finish();
 			return true;
 		default:

@@ -14,8 +14,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.AdapterView.OnItemClickListener;
 import database.DatabaseClass;
 import functions.SongsManager;
@@ -28,12 +30,13 @@ public class SongListActivity extends Activity {
 	private ListView showSongs;
 	private Button searchBt;
 	private EditText searchText;
+	private LinearLayout songListLayout;
+	private RelativeLayout playSongView;
 	
 	private ImageButton btPlay;
 	private ImageButton btStop;
 	private ImageButton btNextSong;
 	private ImageButton btPreviousSong;
-	private String songToPlay = "";
 	
 	private DatabaseClass db;
 
@@ -45,6 +48,7 @@ public class SongListActivity extends Activity {
 		db = DatabaseClass.getInstance();
 
 		sm = new SongsManager();
+		songListLayout = (LinearLayout) findViewById(R.id.song_list_layout);
 		showSongs = (ListView) findViewById(R.id.songs_drawer);
 		searchBt = (Button) findViewById(R.id.bt_search);
 		searchText = (EditText) findViewById(R.id.edit_text_song_search);
@@ -54,6 +58,7 @@ public class SongListActivity extends Activity {
 		btStop = (ImageButton) findViewById(R.id.imageButton1);
 		btNextSong = (ImageButton) findViewById(R.id.imageButton2);
 		btPreviousSong = (ImageButton) findViewById(R.id.imageButton4);
+		playSongView = (RelativeLayout) findViewById(R.id.Play_Song_View);
 
 		setONClick();
 		
@@ -122,7 +127,9 @@ public class SongListActivity extends Activity {
 		showSongs.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String song = (String) parent.getAdapter().getItem(position);
-				setContentView(R.layout.activity_song);
+				sm.playSong(sm.getPlayList(), song);
+				songListLayout.setVisibility(LinearLayout.INVISIBLE);
+				playSongView.setVisibility(RelativeLayout.VISIBLE);
 //				Bundle b = new Bundle();
 //				b.putString(Constants.SONGKEY, song);
 //				Intent songScreen = new Intent(getApplicationContext(), SongActivity.class);
