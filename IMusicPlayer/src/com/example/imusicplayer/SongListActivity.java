@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -28,6 +29,12 @@ public class SongListActivity extends Activity {
 	private Button searchBt;
 	private EditText searchText;
 	
+	private ImageButton btPlay;
+	private ImageButton btStop;
+	private ImageButton btNextSong;
+	private ImageButton btPreviousSong;
+	private String songToPlay = "";
+	
 	private DatabaseClass db;
 
 	@Override
@@ -41,6 +48,12 @@ public class SongListActivity extends Activity {
 		showSongs = (ListView) findViewById(R.id.songs_drawer);
 		searchBt = (Button) findViewById(R.id.bt_search);
 		searchText = (EditText) findViewById(R.id.edit_text_song_search);
+		
+		// SongActivity Ansicht
+		btPlay = (ImageButton) findViewById(R.id.imageButton3);
+		btStop = (ImageButton) findViewById(R.id.imageButton1);
+		btNextSong = (ImageButton) findViewById(R.id.imageButton2);
+		btPreviousSong = (ImageButton) findViewById(R.id.imageButton4);
 
 		setONClick();
 		
@@ -109,11 +122,12 @@ public class SongListActivity extends Activity {
 		showSongs.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String song = (String) parent.getAdapter().getItem(position);
-				Bundle b = new Bundle();
-				b.putString(Constants.SONGKEY, song);
-				Intent songScreen = new Intent(getApplicationContext(), SongActivity.class);
-				songScreen.putExtras(b);
-				startActivity(songScreen);
+				setContentView(R.layout.activity_song);
+//				Bundle b = new Bundle();
+//				b.putString(Constants.SONGKEY, song);
+//				Intent songScreen = new Intent(getApplicationContext(), SongActivity.class);
+//				songScreen.putExtras(b);
+//				startActivity(songScreen);
 			}
 		});
 		searchBt.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +140,26 @@ public class SongListActivity extends Activity {
 				}
 				searchText.setText("");
 				showSearchedSongs(searchedSongs);
+			}
+		});
+		btPlay.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				sm.startSong();
+			}
+		});
+		btStop.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				sm.stopSong();
+			}
+		});
+		btNextSong.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+
+			}
+		});
+		btPreviousSong.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+
 			}
 		});
 	}
