@@ -52,6 +52,9 @@ public class SongListActivity extends Activity {
 	private SeekBar songProgressBar;
 
 	private DatabaseClass db;
+	
+	private Boolean randomActive = false;
+	private Boolean loopActive = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -155,8 +158,8 @@ public class SongListActivity extends Activity {
 	}
 	
 	public void setProgressBarSettings() {
-		songProgressBar.setMax(sm.getDuration()/1000);
-		maxSongTimePos.setText(showProgress(sm.getDuration()/1000));
+		songProgressBar.setMax(sm.getDuration()/1000 -1);
+		maxSongTimePos.setText(showProgress(sm.getDuration()/1000 -1));
 	}
 
 	// Set on Click Listener from Songs
@@ -199,18 +202,29 @@ public class SongListActivity extends Activity {
 		});
 		randomSong.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (!randomSong.isActivated()) {
-					loopSong.setActivated(false);
+				if (!randomActive) {
+					loopActive = false;
+					loopSong.setImageResource(R.drawable.replay_icon);
+					randomSong.setImageResource(R.drawable.shuffle_icon_active);
+					randomActive = true;
+				} else {
+					randomSong.setImageResource(R.drawable.shuffle_icon);
+					randomActive = false;
 				}
 				randomSong.setActivated(!randomSong.isActivated());
 			}
 		});
 		loopSong.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (!loopSong.isActivated()) {
-					randomSong.setActivated(false);
+				if (!loopActive) {
+					randomActive = false;
+					randomSong.setImageResource(R.drawable.shuffle_icon);
+					loopSong.setImageResource(R.drawable.replay_icon_active);
+					loopActive = true;
+				} else {
+					loopSong.setImageResource(R.drawable.replay_icon);
+					loopActive = false;
 				}
-				loopSong.setActivated(!loopSong.isActivated());
 			}
 		});
 		btNextSong.setOnClickListener(new View.OnClickListener() {
@@ -257,6 +271,22 @@ public class SongListActivity extends Activity {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				currentSongTimePos.setText(showProgress(songProgressBar.getProgress()));
+				if(songProgressBar.getProgress() == songProgressBar.getMax()) {
+					System.out.println("Test1");
+					if(loopActive) {
+						songProgressBar.setProgress(0);
+						sm.startSong();
+					}
+					if(randomActive) {
+						songProgressBar.setProgress(0);
+						int randomSong;
+						randomSong = (int)(Math.random() * songList.size()); 
+						sm.playSong(sm.getPlayList(), songList.get(randomSong));
+						playedSongTv.setText(songList.get(randomSong));
+						setProgressBarSettings();
+						sm.startSong();
+					}
+				}
 			}
 		});
 	}
