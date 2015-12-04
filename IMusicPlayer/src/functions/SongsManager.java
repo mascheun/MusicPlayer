@@ -97,4 +97,18 @@ public class SongsManager {
 	public void stopSong() {
 		mp.pause();
 	}
+	
+	public int getDuration() {
+		return mp.getDuration();
+
+	}
+	
+	public int getCurrentPosition() {
+		return mp.getCurrentPosition();
+	}
+	
+	public void setSongTimePosition(int songPosition) {
+		mp.seekTo(songPosition*1000);
+	}
+	
 }

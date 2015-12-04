@@ -45,86 +45,117 @@
             android:dividerHeight="0.1dp" />
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/Play_Song_View"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@drawable/wallpaper_blau"
+        android:orientation="vertical"
         android:visibility="invisible" >
 
-        <ImageButton
-            android:id="@+id/imageButton3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/imageButton4"
-            android:layout_toEndOf="@+id/imageButton4"
-            android:layout_toRightOf="@+id/imageButton4"
-            android:contentDescription="@string/description1"
-            android:src="@drawable/play_icon" />
+        <TextView
+            android:id="@+id/song_name_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="264dp"
+            android:layout_weight="0.32"
+            android:text="@string/played_song_name"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <ImageButton
-            android:id="@+id/imageButton1"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/seekBar1"
-            android:layout_alignParentBottom="true"
-            android:layout_alignStart="@+id/seekBar1"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:contentDescription="@string/description4"
-            android:src="@drawable/stop_icon" />
+            android:orientation="horizontal" >
 
-        <ImageButton
-            android:id="@+id/imageButton4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/imageButton1"
-            android:layout_toEndOf="@+id/imageButton1"
-            android:layout_toRightOf="@+id/imageButton1"
-            android:contentDescription="@string/description3"
-            android:src="@drawable/prev_track_icon" />
+            <ImageButton
+                android:id="@+id/imageButton5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/description6"
+                android:src="@drawable/replay_icon" />
 
-        <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="wrap_content"
+            <ImageButton
+                android:id="@+id/imageButton6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="26dp"
+                android:layout_marginStart="26dp"
+                android:contentDescription="@string/description5"
+                android:scaleType="center"
+                android:src="@drawable/shuffle_icon" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timerDisplay"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/imageButton3"
-            android:layout_toEndOf="@+id/imageButton3"
-            android:layout_toRightOf="@+id/imageButton3"
-            android:contentDescription="@string/description2"
-            android:src="@drawable/next_track_icon" />
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" >
+
+            <!-- Current Duration Label -->
+
+            <TextView
+                android:id="@+id/songCurrentDurationLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:textColor="#eeeeee"
+                android:textStyle="bold" />
+            <!-- Total Duration Label -->
+
+            <TextView
+                android:id="@+id/songTotalDurationLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="#04cbde"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <SeekBar
             android:id="@+id/seekBar1"
-            android:layout_width="262dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/imageButton3"
-            android:layout_centerHorizontal="true"
             android:layout_marginBottom="21dp" />
 
-        <ImageButton
-            android:id="@+id/imageButton5"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/imageButton6"
-            android:layout_toEndOf="@+id/imageButton3"
-            android:layout_toRightOf="@+id/imageButton3"
-            android:contentDescription="@string/description6"
-            android:src="@drawable/replay_icon" />
+            android:orientation="horizontal" >
 
-        <ImageButton
-            android:id="@+id/imageButton6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/seekBar1"
-            android:layout_alignLeft="@+id/imageButton1"
-            android:layout_alignStart="@+id/imageButton1"
-            android:layout_marginLeft="26dp"
-            android:layout_marginStart="26dp"
-            android:contentDescription="@string/description5"
-            android:scaleType="center"
-            android:src="@drawable/shuffle_icon" />
-    </RelativeLayout>
+            <ImageButton
+                android:id="@+id/imageButton4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/description3"
+                android:src="@drawable/prev_track_icon" />
+
+            <ImageButton
+                android:id="@+id/imageButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/description1"
+                android:src="@drawable/play_icon" />
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/description2"
+                android:src="@drawable/next_track_icon" />
+
+            <ImageButton
+                android:id="@+id/imageButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:contentDescription="@string/description4"
+                android:src="@drawable/stop_icon" />
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
