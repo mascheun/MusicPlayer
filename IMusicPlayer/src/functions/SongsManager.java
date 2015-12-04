@@ -113,7 +113,6 @@ public class SongsManager {
 	
 	public void stoppMp() {
 		mp.stop();
-		mp.release();
 	}
 	
 }
