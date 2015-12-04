@@ -111,4 +111,8 @@ public class SongsManager {
 		mp.seekTo(songPosition*1000);
 	}
 	
+	public void stoppMp() {
+		mp.stop();
+	}
+	
 }

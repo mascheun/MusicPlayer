@@ -105,6 +105,12 @@ public class SongListActivity extends Activity {
 		}
 
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		sm.stoppMp();
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
