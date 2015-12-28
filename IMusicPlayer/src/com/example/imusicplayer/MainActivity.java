@@ -1,173 +1,343 @@
 package com.example.imusicplayer;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.UUID;
+
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 import database.DatabaseClass;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends Activity {
 
-	private DrawerLayout mDrawerLayout;
-	private ListView mDrawerList;
-	private ActionBarDrawerToggle mDrawerToggle;
-	private CharSequence mTitle;
-	private String[] drawerTitles;
-	private String[] drawerSubtitles;
-	private int[] drawerIcons;
-	private DatabaseClass db;
-	SongListActivity sla;
-	PlayListActivity pla;
+  private DrawerLayout mDrawerLayout;
+  private ListView mDrawerList;
+  private ActionBarDrawerToggle mDrawerToggle;
+  private CharSequence mTitle;
+  private String[] drawerTitles;
+  private String[] drawerSubtitles;
+  private int[] drawerIcons;
+  private DatabaseClass db;
+  private LinearLayout deviceLayout;
+  private ListView devices;
+  SongListActivity sla;
+  PlayListActivity pla;
+  public static MainActivity instance = null;
+  private static final int REQUEST_ENABLE_BT = 1;
+  public BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+  BluetoothDevice device1;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+  private ConnectThread connectThread;
 
-		setContentView(R.layout.activity_main);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    instance = this;
 
-		sla = new SongListActivity();
-		pla = new PlayListActivity();
+    setContentView(R.layout.activity_main);
 
-		db = DatabaseClass.getInstance();
-		db.setActivity(this);
-		db.CreatePlayListDatabase();
-		db.addPlayListTable();
-		
-		mTitle = getTitle();
+    sla = new SongListActivity();
+    pla = new PlayListActivity();
 
-		initializeAllGuiObjects();
+    db = DatabaseClass.getInstance();
+    db.setActivity(this);
+    db.CreatePlayListDatabase();
+    db.addPlayListTable();
 
-		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+    mTitle = getTitle();
 
-		createMenue();
+    initializeAllGuiObjects();
 
-	}
+    mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-	// Fügt das Menü hinzu / ActionBar Einträge
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
+    createMenue();
 
-	// Versteckt die ActionBar-Einträge, sobald der Drawer ausgefahren is
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		menu.findItem(R.id.song_list).setVisible(!drawerOpen);
-		menu.findItem(R.id.playlist_manager).setVisible(!drawerOpen);
-		menu.findItem(R.id.exit).setVisible(!drawerOpen);
-		return super.onPrepareOptionsMenu(menu);
-	}
+    setONClickListener();
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Öffnet und schließt den Navigation Drawer bei Klick auf den Titel/das
-		// Icon in der ActionBar
-		if (item.getItemId() == android.R.id.home) {
-			if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
-				mDrawerLayout.closeDrawer(mDrawerList);
-			} else {
-				mDrawerLayout.openDrawer(mDrawerList);
-			}
-		}
+    showBluetoothdevices();
 
-		// Gibt den ActionBar-Buttons Funktionen
-		switch (item.getItemId()) {
-		case R.id.song_list:
-			Intent songListScreen = new Intent(getApplicationContext(), SongListActivity.class);
-			Bundle b = new Bundle();
-			b.putInt(Constants.MODE, Constants.REGULARSONG); //Your id
-			songListScreen.putExtras(b); //Put your id to your next Intent
-			startActivity(songListScreen);
-			return true;
-		case R.id.playlist_manager:
-			Intent playListScreen = new Intent(getApplicationContext(), PlayListActivity.class);
-			startActivity(playListScreen);
-			return true;
-		case R.id.exit:
-			sla.finish();
-			pla.finish();
-			finish();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
+  }
 
-	// Listener für die Navigation Drawer Einträge - Achtung: Zählung beginnt
-	// bei 0!
-	private class DrawerItemClickListener implements ListView.OnItemClickListener {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			mDrawerList.setItemChecked(position, true);
-			mTitle = drawerTitles[position];
-			getActionBar().setTitle(mTitle);
-			mDrawerLayout.closeDrawer(mDrawerList);
-		}
-	}
+  // Fügt das Menü hinzu / ActionBar Einträge
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.main, menu);
+    return super.onCreateOptionsMenu(menu);
+  }
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		mDrawerToggle.syncState();
-	}
+  // Versteckt die ActionBar-Einträge, sobald der Drawer ausgefahren is
+  @Override
+  public boolean onPrepareOptionsMenu(Menu menu) {
+    boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+    menu.findItem(R.id.song_list).setVisible(!drawerOpen);
+    menu.findItem(R.id.playlist_manager).setVisible(!drawerOpen);
+    menu.findItem(R.id.exit).setVisible(!drawerOpen);
+    return super.onPrepareOptionsMenu(menu);
+  }
 
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		mDrawerToggle.onConfigurationChanged(newConfig);
-	}
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // Öffnet und schließt den Navigation Drawer bei Klick auf den Titel/das
+    // Icon in der ActionBar
+    if (item.getItemId() == android.R.id.home) {
+      if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+        mDrawerLayout.closeDrawer(mDrawerList);
+      } else {
+        mDrawerLayout.openDrawer(mDrawerList);
+      }
+    }
 
-	// Initialize all GUI Objects
-	public void initializeAllGuiObjects() {
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+    // Gibt den ActionBar-Buttons Funktionen
+    switch (item.getItemId()) {
+    case R.id.song_list:
+      Intent songListScreen = new Intent(getApplicationContext(), SongListActivity.class);
+      Bundle b = new Bundle();
+      b.putInt(Constants.MODE, Constants.REGULARSONG); // Your id
+      songListScreen.putExtras(b); // Put your id to your next Intent
+      startActivity(songListScreen);
+      return true;
+    case R.id.playlist_manager:
+      Intent playListScreen = new Intent(getApplicationContext(), PlayListActivity.class);
+      startActivity(playListScreen);
+      return true;
+    case R.id.exit:
+      sla.finish();
+      pla.finish();
+      finish();
+      return true;
+    default:
+      return super.onOptionsItemSelected(item);
+    }
+  }
 
-	}
+  // Listener für die Navigation Drawer Einträge - Achtung: Zählung beginnt
+  // bei 0!
+  private class DrawerItemClickListener implements ListView.OnItemClickListener {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+      mDrawerList.setItemChecked(position, true);
+      mTitle = drawerTitles[position];
+      getActionBar().setTitle(mTitle);
+      mDrawerLayout.closeDrawer(mDrawerList);
+    }
+  }
 
-	// Create the menue
-	public void createMenue() {
-		// Hole die Titel aus einem Array aus der strings.xml
-		drawerTitles = getResources().getStringArray(R.array.drawerTitles_array);
-		// Setzt die Icons zu den Einträgen
-		drawerIcons = new int[] { android.R.drawable.ic_menu_manage, android.R.drawable.ic_menu_edit,
-				android.R.drawable.ic_menu_delete };
+  @Override
+  protected void onPostCreate(Bundle savedInstanceState) {
+    super.onPostCreate(savedInstanceState);
+    mDrawerToggle.syncState();
+  }
 
-		// Erstellt den neuen MenuAdapter aus der Klasse MenuListAdapter
-		MenuListAdapter mMenuAdapter = new MenuListAdapter(this, drawerTitles, drawerSubtitles, drawerIcons);
-		mDrawerList.setAdapter(mMenuAdapter);
-		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+    mDrawerToggle.onConfigurationChanged(newConfig);
+  }
 
-		// Bereitet die ActionBar auf den Navigation Drawer vor
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
+  // Initialize all GUI Objects
+  public void initializeAllGuiObjects() {
+    mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    mDrawerList = (ListView) findViewById(R.id.left_drawer);
+    deviceLayout = (LinearLayout) findViewById(R.id.divice_layout);
+    devices = (ListView) findViewById(R.id.divice_list);
 
-		// Fügt den Navigation Drawer zur ActionBar hinzu
-		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
-				R.string.drawer_close) {
-			public void onDrawerClosed(View view) {
-				getActionBar().setTitle(mTitle);
-				invalidateOptionsMenu();
-			}
+  }
 
-			public void onDrawerOpened(View drawerView) {
-				getActionBar().setTitle(R.string.app_name);
-				invalidateOptionsMenu();
-			}
-		};
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
-	}
+  // Create the menue
+  public void createMenue() {
+    // Hole die Titel aus einem Array aus der strings.xml
+    drawerTitles = getResources().getStringArray(R.array.drawerTitles_array);
+    // Setzt die Icons zu den Einträgen
+    drawerIcons = new int[] { android.R.drawable.ic_menu_manage, android.R.drawable.ic_menu_edit,
+        android.R.drawable.ic_menu_delete };
+
+    // Erstellt den neuen MenuAdapter aus der Klasse MenuListAdapter
+    MenuListAdapter mMenuAdapter = new MenuListAdapter(this, drawerTitles, drawerSubtitles, drawerIcons);
+    mDrawerList.setAdapter(mMenuAdapter);
+    mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+    // Bereitet die ActionBar auf den Navigation Drawer vor
+    getActionBar().setDisplayHomeAsUpEnabled(true);
+    getActionBar().setHomeButtonEnabled(true);
+
+    // Fügt den Navigation Drawer zur ActionBar hinzu
+    mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open,
+        R.string.drawer_close) {
+      public void onDrawerClosed(View view) {
+        getActionBar().setTitle(mTitle);
+        invalidateOptionsMenu();
+      }
+
+      public void onDrawerOpened(View drawerView) {
+        getActionBar().setTitle(R.string.app_name);
+        invalidateOptionsMenu();
+      }
+    };
+    mDrawerLayout.setDrawerListener(mDrawerToggle);
+  }
+
+  // ************************Bluetoothtest
+
+  // Set on Click Listener from PlayLists
+  public void setONClickListener() {
+    devices.setOnItemClickListener(new OnItemClickListener() {
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(MainActivity.this, "Click mich hart", Toast.LENGTH_LONG).show();
+        String device = (String) parent.getAdapter().getItem(position);
+        TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        connectThread = new ConnectThread(UUID.fromString(tManager.getDeviceId()), device1);
+
+        connectThread.run();
+
+      }
+    });
+  }
+
+  // Shows songs from PlayList
+  public void showBluetoothdevices() {
+    if (isBluetoothAvailable()) {
+      enableBluetooth();
+      ArrayList<String> deviceList;
+
+      deviceList = findDevices();
+      if (deviceList == null) {
+        return;
+      }
+      ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, deviceList);
+      devices.setAdapter(adapter);
+
+    }
+
+  }
+
+  public boolean isBluetoothAvailable() {
+    boolean available = true;
+    if (mBluetoothAdapter == null) {
+      available = false;
+    }
+
+    return available;
+  }
+
+  public boolean enableBluetooth() {
+    boolean enableBluet = true;
+    if (!mBluetoothAdapter.isEnabled()) {
+
+      Toast.makeText(MainActivity.this, "fuck this shit", Toast.LENGTH_LONG).show();
+      enableBluet = false;
+      Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+      try {
+        this.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+      } catch (Exception e) {
+        Toast.makeText(MainActivity.this, "You will never win", Toast.LENGTH_LONG).show();
+      }
+
+    }
+
+    return enableBluet;
+  }
+
+  public ArrayList<String> findDevices() {
+
+    Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+    ArrayList<String> allBluetoothDevices = new ArrayList<String>();
+    // If there are paired devices
+    if (pairedDevices.size() > 0) {
+      // Loop through paired devices
+      for (BluetoothDevice device : pairedDevices) {
+        // Add the name and address to an array adapter to show in a ListView
+        allBluetoothDevices.add(device.getName() + "\n" + device.getAddress());
+        device1 = device;
+      }
+
+      return allBluetoothDevices;
+
+    }
+
+    return null;
+  }
+
+  // TODO
+  private class ConnectThread extends Thread {
+    
+    UUID mUUID;
+    BluetoothDevice device;
+    ConnectThread(UUID mUUID, BluetoothDevice device) {
+      this.mUUID = mUUID;
+      this.device = device;
+    }
+    private BluetoothSocket bTSocket;
+
+    public boolean connect(BluetoothDevice bTDevice, UUID mUUID) {
+      BluetoothSocket temp = null;
+      try {
+        temp = bTDevice.createRfcommSocketToServiceRecord(mUUID);
+      } catch (IOException e) {
+        Log.d("CONNECTTHREAD", "Could not create RFCOMM socket:" + e.toString());
+        return false;
+      }
+      try {
+        bTSocket.connect();
+      } catch (IOException e) {
+        Log.d("CONNECTTHREAD", "Could not connect: " + e.toString());
+        try {
+          bTSocket.close();
+        } catch (IOException close) {
+          Log.d("CONNECTTHREAD", "Could not close connection:" + e.toString());
+          return false;
+        }
+      }
+      return true;
+    }
+
+    public boolean cancel() {
+      try {
+        bTSocket.close();
+      } catch (IOException e) {
+        Log.d("CONNECTTHREAD", "Could not close connection:" + e.toString());
+        return false;
+      }
+      return true;
+    }
+
+    @Override
+    public void run() {
+      while (true) {
+        if(connect(device, mUUID)){
+          while (true) {
+            
+          }
+        }
+      }
+    }
+
+  }
 
 }

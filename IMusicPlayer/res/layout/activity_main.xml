@@ -26,20 +26,34 @@
             android:choiceMode="singleChoice"
             android:divider="#e3e3e3"
             android:dividerHeight="0.1dp" />
-        
-		<ListView
-		    android:id="@+id/songs_drawer"
-		    android:layout_width="match_parent"
-		    android:layout_height="match_parent"
-		    android:layout_alignTop="@+id/drawer_layout"
-		    android:layout_centerHorizontal="true"
-		    android:background="@drawable/wallpaper_blau"
-		    android:choiceMode="singleChoice"
-		    android:divider="#e3e3e3"
-		    android:dividerHeight="0.1dp"
-		    android:visibility="invisible" />
-		
-        
+
+        <ListView
+            android:id="@+id/songs_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/drawer_layout"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/wallpaper_blau"
+            android:choiceMode="singleChoice"
+            android:divider="#e3e3e3"
+            android:dividerHeight="0.1dp"
+            android:visibility="invisible" />
     </android.support.v4.widget.DrawerLayout>
+
+    <LinearLayout
+        android:id="@+id/divice_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/wallpaper_blau"
+        android:orientation="vertical"
+        android:visibility="visible" >
+
+        <ListView
+            android:id="@+id/divice_list"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.83"
+            android:background="@drawable/wallpaper_blau" />
+    </LinearLayout>
 
 </RelativeLayout>
