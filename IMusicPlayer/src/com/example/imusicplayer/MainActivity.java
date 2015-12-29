@@ -52,6 +52,7 @@ public class MainActivity extends Activity {
   private static final int REQUEST_ENABLE_BT = 1;
   public BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
   BluetoothDevice device1;
+  private static final UUID MY_UUID = UUID.fromString("0000110A-0000-1000-8000-00805F9B34FB");
 
   private ConnectThread connectThread;
 
@@ -209,13 +210,8 @@ public class MainActivity extends Activity {
   public void setONClickListener() {
     devices.setOnItemClickListener(new OnItemClickListener() {
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(MainActivity.this, "Click mich hart", Toast.LENGTH_LONG).show();
-        String device = (String) parent.getAdapter().getItem(position);
-        TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        connectThread = new ConnectThread(UUID.fromString(tManager.getDeviceId()), device1);
-
+        connectThread = new ConnectThread(device1);
         connectThread.run();
-
       }
     });
   }
@@ -250,13 +246,12 @@ public class MainActivity extends Activity {
     boolean enableBluet = true;
     if (!mBluetoothAdapter.isEnabled()) {
 
-      Toast.makeText(MainActivity.this, "fuck this shit", Toast.LENGTH_LONG).show();
       enableBluet = false;
       Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
       try {
         this.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
       } catch (Exception e) {
-        Toast.makeText(MainActivity.this, "You will never win", Toast.LENGTH_LONG).show();
+        
       }
 
     }
@@ -287,57 +282,56 @@ public class MainActivity extends Activity {
   // TODO
   private class ConnectThread extends Thread {
     
-    UUID mUUID;
-    BluetoothDevice device;
-    ConnectThread(UUID mUUID, BluetoothDevice device) {
-      this.mUUID = mUUID;
-      this.device = device;
-    }
-    private BluetoothSocket bTSocket;
-
-    public boolean connect(BluetoothDevice bTDevice, UUID mUUID) {
-      BluetoothSocket temp = null;
-      try {
-        temp = bTDevice.createRfcommSocketToServiceRecord(mUUID);
-      } catch (IOException e) {
-        Log.d("CONNECTTHREAD", "Could not create RFCOMM socket:" + e.toString());
-        return false;
-      }
-      try {
-        bTSocket.connect();
-      } catch (IOException e) {
-        Log.d("CONNECTTHREAD", "Could not connect: " + e.toString());
+    private final BluetoothSocket mmSocket;
+    private final BluetoothDevice mmDevice;
+  
+    public ConnectThread(BluetoothDevice device) {
+        // Use a temporary object that is later assigned to mmSocket,
+        // because mmSocket is final
+        BluetoothSocket tmp = null;
+        mmDevice = device;
+  
+        // Get a BluetoothSocket to connect with the given BluetoothDevice
         try {
-          bTSocket.close();
-        } catch (IOException close) {
-          Log.d("CONNECTTHREAD", "Could not close connection:" + e.toString());
-          return false;
+            // MY_UUID is the app's UUID string, also used by the server code
+          Toast.makeText(MainActivity.this, "create rfcomm socket", Toast.LENGTH_LONG).show();
+            tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+        } catch (IOException e) {
+          Toast.makeText(MainActivity.this, "can't create rfcomm socket", Toast.LENGTH_LONG).show();
         }
-      }
-      return true;
+        Toast.makeText(MainActivity.this, "assign socket", Toast.LENGTH_LONG).show();
+        mmSocket = tmp;
     }
-
-    public boolean cancel() {
-      try {
-        bTSocket.close();
-      } catch (IOException e) {
-        Log.d("CONNECTTHREAD", "Could not close connection:" + e.toString());
-        return false;
-      }
-      return true;
-    }
-
-    @Override
+  
     public void run() {
-      while (true) {
-        if(connect(device, mUUID)){
-          while (true) {
-            
-          }
+        // Cancel discovery because it will slow down the connection
+      Toast.makeText(MainActivity.this, "cancel discovery", Toast.LENGTH_LONG).show();
+        mBluetoothAdapter.cancelDiscovery();
+  
+        try {
+            // Connect the device through the socket. This will block
+            // until it succeeds or throws an exception
+            mmSocket.connect();
+            Toast.makeText(MainActivity.this, "connected", Toast.LENGTH_LONG).show();
+        } catch (IOException connectException) {
+            // Unable to connect; close the socket and get out
+            try {
+              Toast.makeText(MainActivity.this, "connection closed", Toast.LENGTH_LONG).show();
+              mmSocket.close(); 
+            } catch (IOException closeException) { }
+            return;
         }
-      }
+  
+        // Do work to manage the connection (in a separate thread)
+        //manageConnectedSocket(mmSocket);
     }
-
+  
+    /** Will cancel an in-progress connection, and close the socket */
+    public void cancel() {
+        try {
+            mmSocket.close();
+        } catch (IOException e) { }
+    }
   }
 
 }
