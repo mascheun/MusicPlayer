@@ -12,15 +12,15 @@ public class SongsManager {
 	// SDCard Path
 	final String MEDIA_PATH = new String("storage/sdcard/Music/testLied");
 	private ArrayList<HashMap<String, String>> songsList = new ArrayList<HashMap<String, String>>();
+	
 
 	// Constructor
 	public SongsManager() {
-
 	}
 
 	/**
 	 * Function to read all mp3 files from sdcard and store the details in
-	 * ArrayList
+	 * Database
 	 */
 	public ArrayList<HashMap<String, String>> getPlayList() {
 		File home = Environment.getExternalStorageDirectory();

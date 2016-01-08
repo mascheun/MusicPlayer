@@ -25,38 +25,38 @@ public class DatabaseClass {
 		this.activ = activ;
 	}
 
-	SQLiteDatabase playListDatabase;
+	SQLiteDatabase currentDatabase;
 
 	public void CreatePlayListDatabase() {
-		playListDatabase = activ.openOrCreateDatabase("PlayLists", Activity.MODE_PRIVATE, null);
+		currentDatabase = activ.openOrCreateDatabase("PlayLists", Activity.MODE_PRIVATE, null);
 	}
 
 	public void addPlayListTable() {
-		playListDatabase
+		currentDatabase
 				.execSQL("CREATE TABLE IF NOT EXISTS PlayList (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR);");
 	}
 
 	// Add the PlayList name in the Playlist Table and create a new Table for
 	// the playlist
 	public void addPlayList(String playlist) {
-		playListDatabase.execSQL("INSERT INTO PlayList VALUES(NULL, '" + playlist + "');");
-		playListDatabase.execSQL(
+		currentDatabase.execSQL("INSERT INTO PlayList VALUES(NULL, '" + playlist + "');");
+		currentDatabase.execSQL(
 				"CREATE TABLE IF NOT EXISTS " + playlist + " (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR);");
 	}
 
 	// delete the PlayList name in the Playlist Table and delete the Table for
 	// the playlist
 	public void deletePlayList(String playlist) {
-		playListDatabase.execSQL("DELETE FROM PlayList WHERE name = '" + playlist + "';");
-		playListDatabase.execSQL("DROP TABLE " + playlist + ";");
+		currentDatabase.execSQL("DELETE FROM PlayList WHERE name = '" + playlist + "';");
+		currentDatabase.execSQL("DROP TABLE " + playlist + ";");
 	}
 
 	public void addSongToPlayList(String playlist, String songName) {
-		playListDatabase.execSQL("INSERT INTO " + playlist + " VALUES(NULL, '" + songName + "');");
+		currentDatabase.execSQL("INSERT INTO " + playlist + " VALUES(NULL, '" + songName + "');");
 	}
 	
 	public void deleteSongFromPlayList(String playlist, String songName) {
-		playListDatabase.execSQL("DELETE FROM " + playlist + " WHERE name = '" + songName + "';");
+		currentDatabase.execSQL("DELETE FROM " + playlist + " WHERE name = '" + songName + "';");
 	}
 
 	public ArrayList<String> showPlayLists() {
@@ -64,7 +64,7 @@ public class DatabaseClass {
 		ArrayList<String> playLists = new ArrayList<String>();
 
 		String selectQuery = "SELECT * FROM PlayList;";
-		Cursor cursor = playListDatabase.rawQuery(selectQuery, null);
+		Cursor cursor = currentDatabase.rawQuery(selectQuery, null);
 
 		// looping through all rows and adding to list
 		if (cursor.moveToFirst()) {
@@ -81,7 +81,7 @@ public class DatabaseClass {
 		ArrayList<String> songs = new ArrayList<String>();
 		String selectQuery = "SELECT * FROM " + playlist + ";";
 
-		Cursor cursor = playListDatabase.rawQuery(selectQuery, null);
+		Cursor cursor = currentDatabase.rawQuery(selectQuery, null);
 		if (cursor == null) {
 			return songs;
 		}

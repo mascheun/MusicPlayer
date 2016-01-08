@@ -2,8 +2,10 @@ package com.example.imusicplayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,6 +57,8 @@ public class SongListActivity extends Activity {
 	
 	private Boolean randomActive = false;
 	private Boolean loopActive = false;
+	
+	private ArrayList<HashMap<String, String>> songsOnSDCard;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +93,8 @@ public class SongListActivity extends Activity {
 		seekBarThread.start();
 
 		setONClick();
+		
+		songsOnSDCard = sm.getPlayList();
 
 		Bundle b = getIntent().getExtras();
 		int mode = b.getInt(Constants.MODE);
@@ -109,6 +115,7 @@ public class SongListActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		seekBarThread.setRunProgressBar(false);
 		sm.stoppMp();
 	}
 
@@ -120,16 +127,23 @@ public class SongListActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
+		// Gibt den ActionBar-Buttons Funktionen
+	    switch (item.getItemId()) {
+	    case R.id.playlist_manager:
+	      Intent playListScreen = new Intent(getApplicationContext(), PlayListActivity.class);
+	      startActivity(playListScreen);
+	      return true;
+	    case R.id.exit:
+	      finish();
+	      return true;
+	    default:
+	      return super.onOptionsItemSelected(item);
+	    }
 	}
 
 	// Show all possible Songs
 	public void showSongList() {
-		ArrayList<HashMap<String, String>> allSongList = sm.getPlayList();
+		ArrayList<HashMap<String, String>> allSongList = songsOnSDCard;
 		songList = new ArrayList<String>();
 
 		for (HashMap<String, String> hm : allSongList) {
@@ -174,7 +188,7 @@ public class SongListActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String song = (String) parent.getAdapter().getItem(position);
 				playedSongPos = position;
-				sm.playSong(sm.getPlayList(), song);
+				sm.playSong(songsOnSDCard, song);
 				setProgressBarSettings();
 				playedSongTv.setText(song);
 				songListLayout.setVisibility(LinearLayout.INVISIBLE);
@@ -186,7 +200,7 @@ public class SongListActivity extends Activity {
 			public void onClick(View v) {
 				ArrayList<String> searchedSongs = new ArrayList<String>();
 				for (String song : songList) {
-					if (song.contains(searchText.getText().toString())) {
+					if (song.toLowerCase(Locale.US).contains(searchText.getText().toString().toLowerCase(Locale.US))) {
 						searchedSongs.add(song);
 					}
 				}
@@ -242,7 +256,7 @@ public class SongListActivity extends Activity {
 					playedSongPos = 0;
 				}
 				String song = songList.get(playedSongPos);
-				sm.playSong(sm.getPlayList(), song);
+				sm.playSong(songsOnSDCard, song);
 				setProgressBarSettings();
 				playedSongTv.setText(song);
 
@@ -257,7 +271,7 @@ public class SongListActivity extends Activity {
 					playedSongPos = songList.size() - 1;
 				}
 				String song = songList.get(playedSongPos);
-				sm.playSong(sm.getPlayList(), song);
+				sm.playSong(songsOnSDCard, song);
 				setProgressBarSettings();
 				playedSongTv.setText(song);
 			}
@@ -287,7 +301,7 @@ public class SongListActivity extends Activity {
 						songProgressBar.setProgress(0);
 						int randomSong;
 						randomSong = (int)(Math.random() * songList.size()); 
-						sm.playSong(sm.getPlayList(), songList.get(randomSong));
+						sm.playSong(songsOnSDCard, songList.get(randomSong));
 						playedSongTv.setText(songList.get(randomSong));
 						setProgressBarSettings();
 						sm.startSong();

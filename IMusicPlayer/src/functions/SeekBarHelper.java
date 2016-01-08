@@ -6,7 +6,7 @@ public class SeekBarHelper extends Thread {
 
 	private SeekBar songProgressBar;
 	private SongsManager sm;
-	private Boolean runProgressBar = false;
+	private Boolean runProgressBar = true;
 
 	public Boolean getRunProgressBar() {
 		return runProgressBar;
@@ -18,7 +18,7 @@ public class SeekBarHelper extends Thread {
 
 	@Override
 	public void run() {
-		while (true) {
+		while(true){
 			while (runProgressBar) {
 				try {
 					int currentDuration = sm.getCurrentPosition();

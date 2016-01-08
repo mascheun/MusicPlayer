@@ -24,8 +24,7 @@ import functions.ListViewWithChkBoxAdapter;
 import functions.SongsManager;
 
 public class PlayListActivity extends Activity {
-	
-	
+
 	private SongsManager sm;
 	private ListView playLists;
 	private ListView editPlView;
@@ -50,6 +49,7 @@ public class PlayListActivity extends Activity {
 	public int mode = -1;
 
 	private ArrayList<Item> itemList = new ArrayList<Item>();
+	private ArrayList<HashMap<String, String>> songsOnSDCard;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,32 +59,33 @@ public class PlayListActivity extends Activity {
 		db = DatabaseClass.getInstance();
 		db.CreatePlayListDatabase();
 		db.addPlayListTable();
-		
+
 		sm = new SongsManager();
 
 		playLists = (ListView) findViewById(R.id.playlist_drawer);
 		editPlView = (ListView) findViewById(R.id.edit_pl_view);
 		songInConfig = (ListView) findViewById(R.id.songs_in_cofig_pl);
-		
+
 		homePL = (RelativeLayout) findViewById(R.id.HomePlayListView);
 		addPL = (RelativeLayout) findViewById(R.id.AddPlayListView);
 		withCbView = (LinearLayout) findViewById(R.id.WithCBView);
 		editPL = (RelativeLayout) findViewById(R.id.EditPlayListView);
 		plConfig = (LinearLayout) findViewById(R.id.PlayListConfigView);
-		
+
 		addPlOk = (Button) findViewById(R.id.buttonOkAdd);
 		addPlCancel = (Button) findViewById(R.id.buttonCancelAdd);
 		cbButtonOk = (Button) findViewById(R.id.cb_ok);
 		cbButtonCancel = (Button) findViewById(R.id.cb_cancel);
-		
+
 		confPlAddSong = (Button) findViewById(R.id.add_song);
 		confPlDeleteSong = (Button) findViewById(R.id.delete_song);
 		confPlCancel = (Button) findViewById(R.id.cancel_config);
-		
+
 		writePlName = (EditText) findViewById(R.id.editTextPlName);
 		viewWithCheckbock = (ListView) findViewById(R.id.delete_pl_view);
 
 		setONClickListener();
+		songsOnSDCard = sm.getPlayList();
 		showPlayList(playLists);
 
 	}
@@ -120,6 +121,16 @@ public class PlayListActivity extends Activity {
 			homePL.setVisibility(RelativeLayout.INVISIBLE);
 			editPL.setVisibility(RelativeLayout.VISIBLE);
 			return true;
+		case R.id.song_list:
+			Intent songListScreen = new Intent(getApplicationContext(), SongListActivity.class);
+			Bundle b = new Bundle();
+			b.putInt(Constants.MODE, Constants.REGULARSONG); // Your id
+			songListScreen.putExtras(b); // Put your id to your next Intent
+			startActivity(songListScreen);
+			return true;
+		case R.id.exit:
+			finish();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -152,7 +163,7 @@ public class PlayListActivity extends Activity {
 		viewWithCheckbock.setAdapter(lvAdapter);
 		mode = Constants.MODEDELETINGPL;
 	}
-	
+
 	private void showAddSongToPlayList(String playlist) {
 		ArrayList<String> songList = new ArrayList<String>();
 		songList.addAll(fillAllSongsInList());
@@ -166,7 +177,7 @@ public class PlayListActivity extends Activity {
 		viewWithCheckbock.setAdapter(lvAdapter);
 		mode = Constants.MODEADDSONGTOPL;
 	}
-	
+
 	private void showDeleteSongFromPlayList(String playlist) {
 		ArrayList<String> songList = new ArrayList<String>();
 		songList.addAll(db.showSongInPlaylist(playlist));
@@ -180,20 +191,20 @@ public class PlayListActivity extends Activity {
 		viewWithCheckbock.setAdapter(lvAdapter);
 		mode = Constants.MODEDELETESONGFROMPL;
 	}
-	
+
 	// Shows songs from PlayList
 	public void showSongsFromPlayList(String playlist) {
 		ArrayList<String> songList = new ArrayList<String>();
-		if(playlist == null) {
+		if (playlist == null) {
 			return;
 		}
 		songList.addAll(db.showSongInPlaylist(playlist));
 		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
 		songInConfig.setAdapter(adapter);
 	}
-	
+
 	public ArrayList<String> fillAllSongsInList() {
-		ArrayList<HashMap<String, String>> allSongList = sm.getPlayList();
+		ArrayList<HashMap<String, String>> allSongList = songsOnSDCard;
 		ArrayList<String> songList = new ArrayList<String>();
 
 		for (HashMap<String, String> hm : allSongList) {
@@ -209,14 +220,15 @@ public class PlayListActivity extends Activity {
 				String playlist = (String) parent.getAdapter().getItem(position);
 				Intent nextScreen = new Intent(getApplicationContext(), SongListActivity.class);
 				Bundle b = new Bundle();
-				b.putInt(Constants.MODE, Constants.SONGSFROMPLAYLIST); //Your id
+				b.putInt(Constants.MODE, Constants.SONGSFROMPLAYLIST); // Your
+																		// id
 				b.putString(Constants.PLAYLISTKEY, playlist);
-				nextScreen.putExtras(b); //Put your id to your next Intent
+				nextScreen.putExtras(b); // Put your id to your next Intent
 				startActivity(nextScreen);
 				finish();
 			}
 		});
-		
+
 		editPlView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				String playlist = (String) parent.getAdapter().getItem(position);
@@ -224,7 +236,7 @@ public class PlayListActivity extends Activity {
 				editedPl = playlist;
 				editPL.setVisibility(RelativeLayout.INVISIBLE);
 				plConfig.setVisibility(LinearLayout.VISIBLE);
-				
+
 			}
 		});
 
@@ -247,7 +259,7 @@ public class PlayListActivity extends Activity {
 				homePL.setVisibility(RelativeLayout.VISIBLE);
 			}
 		});
-		
+
 		confPlAddSong.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				showAddSongToPlayList(editedPl);
@@ -255,7 +267,7 @@ public class PlayListActivity extends Activity {
 				withCbView.setVisibility(RelativeLayout.VISIBLE);
 			}
 		});
-		
+
 		confPlDeleteSong.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				showDeleteSongFromPlayList(editedPl);
@@ -263,7 +275,7 @@ public class PlayListActivity extends Activity {
 				withCbView.setVisibility(RelativeLayout.VISIBLE);
 			}
 		});
-		
+
 		confPlCancel.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				plConfig.setVisibility(LinearLayout.INVISIBLE);
