@@ -1,13 +1,17 @@
 package com.example.imusicplayer;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothA2dp;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -34,6 +38,7 @@ public class MainActivity extends Activity {
 	private static final int REQUEST_ENABLE_BT = 1;
 	public BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 	BluetoothDevice device1;
+	public BluetoothA2dp mBluetLoudspeaker;
 	private static final UUID MY_UUID = UUID.fromString("0000110A-0000-1000-8000-00805F9B34FB");
 
 	private ConnectThread connectThread;
@@ -202,59 +207,105 @@ public class MainActivity extends Activity {
 	// TODO
 	private class ConnectThread extends Thread {
 
-		private final BluetoothSocket mmSocket;
+		//private final BluetoothSocket mmSocket;
 		private final BluetoothDevice mmDevice;
 
 		public ConnectThread(BluetoothDevice device) {
 			// Use a temporary object that is later assigned to mmSocket,
 			// because mmSocket is final
-			BluetoothSocket tmp = null;
+//			BluetoothSocket tmp = null;
 			mmDevice = device;
 
 			// Get a BluetoothSocket to connect with the given BluetoothDevice
-			try {
+//			try {
 				// MY_UUID is the app's UUID string, also used by the server
 				// code
-				Toast.makeText(MainActivity.this, "create rfcomm socket", Toast.LENGTH_LONG).show();
-				tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
-			} catch (IOException e) {
-				Toast.makeText(MainActivity.this, "can't create rfcomm socket", Toast.LENGTH_LONG).show();
-			}
-			Toast.makeText(MainActivity.this, "assign socket", Toast.LENGTH_LONG).show();
-			mmSocket = tmp;
+//				Toast.makeText(MainActivity.this, "create rfcomm socket", Toast.LENGTH_LONG).show();
+				//TODO Hier kann es sein das dies ein Bluetooth 4 standard ist und der Lautsprecher einen geringeren Standard verwendet
+//				tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+//			} catch (IOException e) {
+//				Toast.makeText(MainActivity.this, "can't create rfcomm socket", Toast.LENGTH_LONG).show();
+//			}
+//			Toast.makeText(MainActivity.this, "assign socket", Toast.LENGTH_LONG).show();
+//			mmSocket = tmp;
 		}
 
 		public void run() {
 			// Cancel discovery because it will slow down the connection
-			Toast.makeText(MainActivity.this, "cancel discovery", Toast.LENGTH_LONG).show();
-			mBluetoothAdapter.cancelDiscovery();
-
-			try {
-				// Connect the device through the socket. This will block
-				// until it succeeds or throws an exception
-				mmSocket.connect();
-				Toast.makeText(MainActivity.this, "connected", Toast.LENGTH_LONG).show();
-			} catch (IOException connectException) {
-				// Unable to connect; close the socket and get out
-				try {
-					Toast.makeText(MainActivity.this, "connection closed", Toast.LENGTH_LONG).show();
-					mmSocket.close();
-				} catch (IOException closeException) {
-				}
-				return;
-			}
+//			Toast.makeText(MainActivity.this, "cancel discovery", Toast.LENGTH_LONG).show();
+//			mBluetoothAdapter.cancelDiscovery();
+//
+//			try {
+//				// Connect the device through the socket. This will block
+//				// until it succeeds or throws an exception
+//				mmSocket.connect();
+//				Toast.makeText(MainActivity.this, "connected", Toast.LENGTH_LONG).show();
+//			} catch (IOException connectException) {
+//				// Unable to connect; close the socket and get out
+//				try {
+//					Toast.makeText(MainActivity.this, "connection closed", Toast.LENGTH_LONG).show();
+//					mmSocket.close();
+//				} catch (IOException closeException) {
+//				}
+//				return;
+//			}
+		  
+		  connectDev(mmDevice);
 
 			// Do work to manage the connection (in a separate thread)
 			// manageConnectedSocket(mmSocket);
 		}
 
 		/** Will cancel an in-progress connection, and close the socket */
-		public void cancel() {
-			try {
-				mmSocket.close();
-			} catch (IOException e) {
-			}
-		}
+//		public void cancel() {
+//			try {
+//				mmSocket.close();
+//			} catch (IOException e) {
+//			}
+//		}
+		
+		
 	}
+	public void connectDev(BluetoothDevice device) {
+	  Method connect = null;
+	  mBluetoothAdapter.getProfileProxy(this, mProfileListener, BluetoothProfile.A2DP);
+	  try {
+      connect = BluetoothA2dp.class.getDeclaredMethod("connect", BluetoothDevice.class);
+      
+    } catch (NoSuchMethodException e) {
+      Toast.makeText(MainActivity.this, "can not create connect method", Toast.LENGTH_LONG).show();
+    }
+    
+    // ... call functions on mBluetoothHeadset
+	  
+	 try {
+    connect.invoke(mBluetLoudspeaker, device);
+  } catch (IllegalAccessException e) {
+    Toast.makeText(MainActivity.this, "Illegal Access", Toast.LENGTH_LONG).show();
+    e.printStackTrace();
+  } catch (IllegalArgumentException e) {
+    Toast.makeText(MainActivity.this, "Illegal Argument", Toast.LENGTH_LONG).show();
+    e.printStackTrace();
+  } catch (InvocationTargetException e) {
+    Toast.makeText(MainActivity.this, "Invocation Target", Toast.LENGTH_LONG).show();
+    e.printStackTrace();
+  }
+     
+    // Close proxy connection after use.
+    mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP,mBluetLoudspeaker);
+	}
+	
+	private BluetoothProfile.ServiceListener mProfileListener = new BluetoothProfile.ServiceListener() {
+    public void onServiceConnected(int profile, BluetoothProfile proxy) {
+        if (profile == BluetoothProfile.A2DP) {
+          mBluetLoudspeaker = (BluetoothA2dp) proxy;
+        }
+    }
+    public void onServiceDisconnected(int profile) {
+        if (profile == BluetoothProfile.A2DP) {
+          mBluetLoudspeaker = null;
+        }
+    }
+};
 
 }
