@@ -63,28 +63,28 @@ public class MainActivity extends Activity {
 			}
 			// Prints or the name of the connected device but signal strength
 			// doesn't work
-			BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-			int rssi = intent.getShortExtra(device.EXTRA_RSSI, Short.MIN_VALUE);
-			Toast.makeText(MainActivity.this, device.getName() + " => " + rssi + "dBm\n", Toast.LENGTH_SHORT).show();
-			Log.d(TAG, "receive intent for action : " + action);
-			if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
-				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_DISCONNECTED);
-				if (state == BluetoothA2dp.STATE_CONNECTED) {
-					setIsA2dpReady(true);
-					// playMusic();
-				} else if (state == BluetoothA2dp.STATE_DISCONNECTED) {
-					setIsA2dpReady(false);
-				}
-			} else if (action.equals(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED)) {
-				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_NOT_PLAYING);
-				if (state == BluetoothA2dp.STATE_PLAYING) {
-					Log.d(TAG, "A2DP start playing");
-					Toast.makeText(MainActivity.this, "A2dp is playing", Toast.LENGTH_SHORT).show();
-				} else {
-					Log.d(TAG, "A2DP stop playing");
-					Toast.makeText(MainActivity.this, "A2dp is stopped", Toast.LENGTH_SHORT).show();
-				}
-			}
+//			BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//			int rssi = intent.getShortExtra(device.EXTRA_RSSI, Short.MIN_VALUE);
+//			Toast.makeText(MainActivity.this, device.getName() + " => " + rssi + "dBm\n", Toast.LENGTH_SHORT).show();
+//			Log.d(TAG, "receive intent for action : " + action);
+//			if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
+//				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_DISCONNECTED);
+//				if (state == BluetoothA2dp.STATE_CONNECTED) {
+//					setIsA2dpReady(true);
+//					// playMusic();
+//				} else if (state == BluetoothA2dp.STATE_DISCONNECTED) {
+//					setIsA2dpReady(false);
+//				}
+//			} else if (action.equals(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED)) {
+//				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_NOT_PLAYING);
+//				if (state == BluetoothA2dp.STATE_PLAYING) {
+//					Log.d(TAG, "A2DP start playing");
+//					Toast.makeText(MainActivity.this, "A2dp is playing", Toast.LENGTH_SHORT).show();
+//				} else {
+//					Log.d(TAG, "A2DP stop playing");
+//					Toast.makeText(MainActivity.this, "A2dp is stopped", Toast.LENGTH_SHORT).show();
+//				}
+//			}
 		}
 
 	};
