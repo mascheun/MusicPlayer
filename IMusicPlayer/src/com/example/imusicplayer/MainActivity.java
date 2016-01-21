@@ -1,13 +1,11 @@
 package com.example.imusicplayer;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothA2dp;
@@ -15,7 +13,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothProfile.ServiceListener;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -32,336 +29,321 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import database.DatabaseClass;
 
 public class MainActivity extends Activity {
 
-  private DatabaseClass db;
-  protected static final String TAG = "ZS-A2dp";
-  private ListView devices;
-  AudioManager mAudioManager;
-  SongListActivity sla;
-  PlayListActivity pla;
-  public static MainActivity instance = null;
-  private static final int REQUEST_ENABLE_BT = 1;
-  public BluetoothAdapter mBluetoothAdapter;
-  public BluetoothA2dp mBluetLoudspeaker;
-  
-  private HashMap<String, BluetoothDevice> deviceList;
-  private List<BluetoothDevice> devList;
+	private DatabaseClass db;
+	protected static final String TAG = "ZS-A2dp";
+	private ListView devices;
+	AudioManager mAudioManager;
+	SongListActivity sla;
+	PlayListActivity pla;
+	public static MainActivity instance = null;
+	private static final int REQUEST_ENABLE_BT = 1;
+	public BluetoothAdapter mBluetoothAdapter;
+	public BluetoothA2dp mBluetLoudspeaker;
 
-  private ConnectThread connectThread;
+	private HashMap<String, BluetoothDevice> deviceList;
+	private List<BluetoothDevice> devList;
 
-  BroadcastReceiver mReceiver = new BroadcastReceiver() {
+	BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
-    @Override
-    public void onReceive(Context ctx, Intent intent) {
-      String action = intent.getAction();
-      if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-        BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-        short rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
-        Toast.makeText(MainActivity.this, device.getName() + " => " + rssi + "dBm\n", Toast.LENGTH_SHORT)
-            .show();
-      }
-      //Prints or the name of the connected device but signal strength doesn't work
-      BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-      int rssi = intent.getShortExtra(device.EXTRA_RSSI,Short.MIN_VALUE);
-      Toast.makeText(MainActivity.this, device.getName() + " => " + rssi + "dBm\n", Toast.LENGTH_SHORT)
-          .show();
-      Log.d(TAG, "receive intent for action : " + action);
-      if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
-        int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_DISCONNECTED);
-        if (state == BluetoothA2dp.STATE_CONNECTED) {
-          setIsA2dpReady(true);
-          // playMusic();
-        } else if (state == BluetoothA2dp.STATE_DISCONNECTED) {
-          setIsA2dpReady(false);
-        }
-      } else if (action.equals(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED)) {
-        int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_NOT_PLAYING);
-        if (state == BluetoothA2dp.STATE_PLAYING) {
-          Log.d(TAG, "A2DP start playing");
-          Toast.makeText(MainActivity.this, "A2dp is playing", Toast.LENGTH_SHORT).show();
-        } else {
-          Log.d(TAG, "A2DP stop playing");
-          Toast.makeText(MainActivity.this, "A2dp is stopped", Toast.LENGTH_SHORT).show();
-        }
-      }
-    }
+		@Override
+		public void onReceive(Context ctx, Intent intent) {
 
-  };
+			String action = intent.getAction();
+			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+                String name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
+				Toast.makeText(MainActivity.this, name + " => " + rssi + "dBm\n", Toast.LENGTH_SHORT)
+						.show();
+			}
+			// Prints or the name of the connected device but signal strength
+			// doesn't work
+			BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+			int rssi = intent.getShortExtra(device.EXTRA_RSSI, Short.MIN_VALUE);
+			Toast.makeText(MainActivity.this, device.getName() + " => " + rssi + "dBm\n", Toast.LENGTH_SHORT).show();
+			Log.d(TAG, "receive intent for action : " + action);
+			if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
+				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_DISCONNECTED);
+				if (state == BluetoothA2dp.STATE_CONNECTED) {
+					setIsA2dpReady(true);
+					// playMusic();
+				} else if (state == BluetoothA2dp.STATE_DISCONNECTED) {
+					setIsA2dpReady(false);
+				}
+			} else if (action.equals(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED)) {
+				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_NOT_PLAYING);
+				if (state == BluetoothA2dp.STATE_PLAYING) {
+					Log.d(TAG, "A2DP start playing");
+					Toast.makeText(MainActivity.this, "A2dp is playing", Toast.LENGTH_SHORT).show();
+				} else {
+					Log.d(TAG, "A2DP stop playing");
+					Toast.makeText(MainActivity.this, "A2dp is stopped", Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
 
-  boolean mIsA2dpReady = false;
+	};
 
-  void setIsA2dpReady(boolean ready) {
-    mIsA2dpReady = ready;
-    Toast.makeText(this, "A2DP ready ? " + (ready ? "true" : "false"), Toast.LENGTH_SHORT).show();
-   
-  }
+	boolean mIsA2dpReady = false;
 
-  private ServiceListener mA2dpListener = new ServiceListener() {
+	void setIsA2dpReady(boolean ready) {
+		mIsA2dpReady = ready;
+		Toast.makeText(this, "A2DP ready ? " + (ready ? "true" : "false"), Toast.LENGTH_SHORT).show();
 
-    @Override
-    public void onServiceConnected(int profile, BluetoothProfile a2dp) {
-      Log.d(TAG, "a2dp service connected. profile = " + profile);
-      if (profile == BluetoothProfile.A2DP) {
-        mBluetLoudspeaker = (BluetoothA2dp) a2dp;
-        if (mAudioManager.isBluetoothA2dpOn()) {
-          setIsA2dpReady(true);
-          // playMusic();
+	}
 
-        } else {
-          Log.d(TAG, "bluetooth a2dp is not on while service connected");
-        }
-      }
-    }
+	private ServiceListener mA2dpListener = new ServiceListener() {
 
-    @Override
-    public void onServiceDisconnected(int profile) {
-      setIsA2dpReady(false);
-    }
+		@Override
+		public void onServiceConnected(int profile, BluetoothProfile a2dp) {
+			Log.d(TAG, "a2dp service connected. profile = " + profile);
+			if (profile == BluetoothProfile.A2DP) {
+				mBluetLoudspeaker = (BluetoothA2dp) a2dp;
+				if (mAudioManager.isBluetoothA2dpOn()) {
+					setIsA2dpReady(true);
+					// playMusic();
 
-  };
+				} else {
+					Log.d(TAG, "bluetooth a2dp is not on while service connected");
+				}
+			}
+		}
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    instance = this;
+		@Override
+		public void onServiceDisconnected(int profile) {
+			setIsA2dpReady(false);
+		}
 
-    setContentView(R.layout.activity_main);
+	};
 
-    sla = new SongListActivity();
-    pla = new PlayListActivity();
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		instance = this;
 
-    mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-    registerReceiver(mReceiver, new IntentFilter(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED));
-    registerReceiver(mReceiver, new IntentFilter(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED));
-    registerReceiver(mReceiver,   new IntentFilter(BluetoothDevice.ACTION_FOUND));
+		setContentView(R.layout.activity_main);
 
-    mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    mBluetoothAdapter.getProfileProxy(this, mA2dpListener, BluetoothProfile.A2DP);
+		sla = new SongListActivity();
+		pla = new PlayListActivity();
 
-    db = DatabaseClass.getInstance();
-    db.setActivity(this);
-    db.CreatePlayListDatabase();
-    db.addPlayListTable();
-    
-    deviceList = new HashMap<String, BluetoothDevice>();
-    devList = new ArrayList<BluetoothDevice>();
+		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		registerReceiver(mReceiver, new IntentFilter(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED));
+		registerReceiver(mReceiver, new IntentFilter(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED));
+		registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
 
-    initializeAllGuiObjects();
+		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		mBluetoothAdapter.getProfileProxy(this, mA2dpListener, BluetoothProfile.A2DP);
 
-    setONClickListener();
+		db = DatabaseClass.getInstance();
+		db.setActivity(this);
+		db.CreatePlayListDatabase();
+		db.addPlayListTable();
 
-    showBluetoothdevices();
+		deviceList = new HashMap<String, BluetoothDevice>();
+		devList = new ArrayList<BluetoothDevice>();
 
-    switchToSonglist();
+		initializeAllGuiObjects();
 
-  }
+		setONClickListener();
 
-  @Override
-  protected void onDestroy() {
-    mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP, mBluetLoudspeaker);
-    unregisterReceiver(mReceiver);
-    super.onDestroy();
-  }
+		showBluetoothdevices();
 
-  // Fügt das Menü hinzu / ActionBar Einträge
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.main, menu);
-    return super.onCreateOptionsMenu(menu);
-  }
+		switchToSonglist();
 
-  // Versteckt die ActionBar-Einträge, sobald der Drawer ausgefahren is
-  @Override
-  public boolean onPrepareOptionsMenu(Menu menu) {
-    return super.onPrepareOptionsMenu(menu);
-  }
+	}
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+	@Override
+	protected void onDestroy() {
+		mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP, mBluetLoudspeaker);
+		unregisterReceiver(mReceiver);
+		super.onDestroy();
+	}
 
-    // Gibt den ActionBar-Buttons Funktionen
-    switch (item.getItemId()) {
-    case R.id.song_list:
-      switchToSonglist();
-      return true;
-    case R.id.playlist_manager:
-      Intent playListScreen = new Intent(getApplicationContext(), PlayListActivity.class);
-      startActivity(playListScreen);
-      return true;
-    case R.id.exit:
-      sla.finish();
-      pla.finish();
-      finish();
-      return true;
-    default:
-      return super.onOptionsItemSelected(item);
-    }
-  }
+	// Fügt das Menü hinzu / ActionBar Einträge
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
 
-  private void switchToSonglist() {
-    Intent songListScreen = new Intent(getApplicationContext(), SongListActivity.class);
-    Bundle b = new Bundle();
-    b.putInt(Constants.MODE, Constants.REGULARSONG); // Your id
-    songListScreen.putExtras(b); // Put your id to your next Intent
-    startActivity(songListScreen);
-  }
+	// Versteckt die ActionBar-Einträge, sobald der Drawer ausgefahren is
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		return super.onPrepareOptionsMenu(menu);
+	}
 
-  @Override
-  protected void onPostCreate(Bundle savedInstanceState) {
-    super.onPostCreate(savedInstanceState);
-  }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 
-  @Override
-  public void onConfigurationChanged(Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
-  }
+		// Gibt den ActionBar-Buttons Funktionen
+		switch (item.getItemId()) {
+		case R.id.song_list:
+			switchToSonglist();
+			return true;
+		case R.id.playlist_manager:
+			Intent playListScreen = new Intent(getApplicationContext(), PlayListActivity.class);
+			startActivity(playListScreen);
+			return true;
+		case R.id.exit:
+			sla.finish();
+			pla.finish();
+			finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 
-  // Initialize all GUI Objects
-  public void initializeAllGuiObjects() {
-    devices = (ListView) findViewById(R.id.divice_list);
+	private void switchToSonglist() {
+		Intent songListScreen = new Intent(getApplicationContext(), SongListActivity.class);
+		Bundle b = new Bundle();
+		b.putInt(Constants.MODE, Constants.REGULARSONG); // Your id
+		songListScreen.putExtras(b); // Put your id to your next Intent
+		startActivity(songListScreen);
+	}
 
-  }
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+	}
 
-  // ************************Bluetoothtest
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+	}
 
-  // Set on Click Listener from PlayLists
-  public void setONClickListener() {
-    devices.setOnItemClickListener(new OnItemClickListener() {
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        connectDev(deviceList.get(devices.getItemAtPosition(position).toString()));
-      }
-    });
-  }
+	// Initialize all GUI Objects
+	public void initializeAllGuiObjects() {
+		devices = (ListView) findViewById(R.id.divice_list);
 
-  // Shows songs from PlayList
-  public void showBluetoothdevices() {
-    if (isBluetoothAvailable()) {
-      enableBluetooth();
-      ArrayList<String> deviceList;
+	}
 
-      deviceList = findDevices();
-      if (deviceList == null) {
-        return;
-      }
-      ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-          deviceList);
-      devices.setAdapter(adapter);
+	// ************************Bluetoothtest
 
-    }
+	// Set on Click Listener from PlayLists
+	public void setONClickListener() {
+		devices.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// connectDev(deviceList.get(devices.getItemAtPosition(position).toString()));
+				mBluetoothAdapter.startDiscovery();
+			}
+		});
+	}
 
-  }
+	// Shows songs from PlayList
+	public void showBluetoothdevices() {
+		if (isBluetoothAvailable()) {
+			enableBluetooth();
+			ArrayList<String> deviceList;
 
-  public boolean isBluetoothAvailable() {
-    boolean available = true;
-    if (mBluetoothAdapter == null) {
-      available = false;
-    }
+			deviceList = findDevices();
+			if (deviceList == null) {
+				return;
+			}
+			ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, deviceList);
+			devices.setAdapter(adapter);
 
-    return available;
-  }
+		}
 
-  public boolean enableBluetooth() {
-    boolean enableBluet = true;
-    if (!mBluetoothAdapter.isEnabled()) {
+	}
 
-      enableBluet = false;
-      Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-      try {
-        this.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-      } catch (Exception e) {
+	public boolean isBluetoothAvailable() {
+		boolean available = true;
+		if (mBluetoothAdapter == null) {
+			available = false;
+		}
 
-      }
+		return available;
+	}
 
-    }
+	public boolean enableBluetooth() {
+		boolean enableBluet = true;
+		if (!mBluetoothAdapter.isEnabled()) {
 
-    return enableBluet;
-  }
+			enableBluet = false;
+			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			try {
+				this.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+			} catch (Exception e) {
 
-  public ArrayList<String> findDevices() {
+			}
 
-    Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-    ArrayList<String> allBluetoothDevices = new ArrayList<String>();
-    // If there are paired devices
-    if (pairedDevices.size() > 0) {
-      // Loop through paired devices
-      for (BluetoothDevice device : pairedDevices) {
-        // Add the name and address to an array adapter to show in a
-        // ListView
-        String dev = device.getName() + "\n" + device.getAddress();
-        allBluetoothDevices.add(dev);
-        deviceList.put(dev, device);
-        devList.add(device);
-      }
+		}
 
-      return allBluetoothDevices;
+		return enableBluet;
+	}
 
-    }
+	public ArrayList<String> findDevices() {
 
-    return null;
-  }
+		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+		ArrayList<String> allBluetoothDevices = new ArrayList<String>();
+		// If there are paired devices
+		if (pairedDevices.size() > 0) {
+			// Loop through paired devices
+			for (BluetoothDevice device : pairedDevices) {
+				// Add the name and address to an array adapter to show in a
+				// ListView
+				String dev = device.getName() + "\n" + device.getAddress();
+				allBluetoothDevices.add(dev);
+				deviceList.put(dev, device);
+				devList.add(device);
+			}
 
-  // TODO
-  private class ConnectThread extends Thread {
+			return allBluetoothDevices;
+
+		}
+
+		return null;
+	}
 
 
-    public ConnectThread(BluetoothDevice device) {
-      
-    }
+	public void connectDev(BluetoothDevice device) {
+		Method connect = null;
+		mBluetoothAdapter.getProfileProxy(this, mProfileListener, BluetoothProfile.A2DP);
+		try {
+			connect = BluetoothA2dp.class.getDeclaredMethod("connect", BluetoothDevice.class);
 
-    public void run() {
-      
-    }
+		} catch (NoSuchMethodException e) {
+			Toast.makeText(MainActivity.this, "can not create connect method", Toast.LENGTH_LONG).show();
+		}
 
-  }
+		// ... call functions on mBluetoothHeadset
 
-  public void connectDev(BluetoothDevice device) {
-    Method connect = null;
-    mBluetoothAdapter.getProfileProxy(this, mProfileListener, BluetoothProfile.A2DP);
-    try {
-      connect = BluetoothA2dp.class.getDeclaredMethod("connect", BluetoothDevice.class);
+		try {
+			connect.invoke(mBluetLoudspeaker, device);
+		} catch (IllegalAccessException e) {
+			Toast.makeText(MainActivity.this, "Illegal Access", Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			Toast.makeText(MainActivity.this, "Illegal Argument", Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			Toast.makeText(MainActivity.this, "Invocation Target", Toast.LENGTH_LONG).show();
+			e.printStackTrace();
+		}
 
-    } catch (NoSuchMethodException e) {
-      Toast.makeText(MainActivity.this, "can not create connect method", Toast.LENGTH_LONG).show();
-    }
+		// Close proxy connection after use.
+		mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP, mBluetLoudspeaker);
+	}
 
-    // ... call functions on mBluetoothHeadset
+	private BluetoothProfile.ServiceListener mProfileListener = new BluetoothProfile.ServiceListener() {
+		public void onServiceConnected(int profile, BluetoothProfile proxy) {
+			if (profile == BluetoothProfile.A2DP) {
+				mBluetLoudspeaker = (BluetoothA2dp) proxy;
+			}
+		}
 
-    try {
-      connect.invoke(mBluetLoudspeaker, device);
-    } catch (IllegalAccessException e) {
-      Toast.makeText(MainActivity.this, "Illegal Access", Toast.LENGTH_LONG).show();
-      e.printStackTrace();
-    } catch (IllegalArgumentException e) {
-      Toast.makeText(MainActivity.this, "Illegal Argument", Toast.LENGTH_LONG).show();
-      e.printStackTrace();
-    } catch (InvocationTargetException e) {
-      Toast.makeText(MainActivity.this, "Invocation Target", Toast.LENGTH_LONG).show();
-      e.printStackTrace();
-    }
-
-    // Close proxy connection after use.
-    mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP, mBluetLoudspeaker);
-  }
-
-  private BluetoothProfile.ServiceListener mProfileListener = new BluetoothProfile.ServiceListener() {
-    public void onServiceConnected(int profile, BluetoothProfile proxy) {
-      if (profile == BluetoothProfile.A2DP) {
-        mBluetLoudspeaker = (BluetoothA2dp) proxy;
-      }
-    }
-
-    public void onServiceDisconnected(int profile) {
-      if (profile == BluetoothProfile.A2DP) {
-        mBluetLoudspeaker = null;
-      }
-    }
-  };
+		public void onServiceDisconnected(int profile) {
+			if (profile == BluetoothProfile.A2DP) {
+				mBluetLoudspeaker = null;
+			}
+		}
+	};
 
 }
