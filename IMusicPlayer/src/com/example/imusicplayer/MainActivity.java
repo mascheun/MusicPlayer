@@ -29,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import database.DatabaseClass;
@@ -49,77 +50,6 @@ public class MainActivity extends Activity {
 	private HashMap<String, BluetoothDevice> deviceList;
 	private List<BluetoothDevice> devList;
 
-	BroadcastReceiver mReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context ctx, Intent intent) {
-
-			String action = intent.getAction();
-			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
-                String name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
-				Toast.makeText(MainActivity.this, name + " => " + rssi + "dBm\n", Toast.LENGTH_SHORT)
-						.show();
-			}
-			// Prints or the name of the connected device but signal strength
-			// doesn't work
-//			BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-//			int rssi = intent.getShortExtra(device.EXTRA_RSSI, Short.MIN_VALUE);
-//			Toast.makeText(MainActivity.this, device.getName() + " => " + rssi + "dBm\n", Toast.LENGTH_SHORT).show();
-//			Log.d(TAG, "receive intent for action : " + action);
-//			if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
-//				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_DISCONNECTED);
-//				if (state == BluetoothA2dp.STATE_CONNECTED) {
-//					setIsA2dpReady(true);
-//					// playMusic();
-//				} else if (state == BluetoothA2dp.STATE_DISCONNECTED) {
-//					setIsA2dpReady(false);
-//				}
-//			} else if (action.equals(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED)) {
-//				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_NOT_PLAYING);
-//				if (state == BluetoothA2dp.STATE_PLAYING) {
-//					Log.d(TAG, "A2DP start playing");
-//					Toast.makeText(MainActivity.this, "A2dp is playing", Toast.LENGTH_SHORT).show();
-//				} else {
-//					Log.d(TAG, "A2DP stop playing");
-//					Toast.makeText(MainActivity.this, "A2dp is stopped", Toast.LENGTH_SHORT).show();
-//				}
-//			}
-		}
-
-	};
-
-	boolean mIsA2dpReady = false;
-
-	void setIsA2dpReady(boolean ready) {
-		mIsA2dpReady = ready;
-		Toast.makeText(this, "A2DP ready ? " + (ready ? "true" : "false"), Toast.LENGTH_SHORT).show();
-
-	}
-
-	private ServiceListener mA2dpListener = new ServiceListener() {
-
-		@Override
-		public void onServiceConnected(int profile, BluetoothProfile a2dp) {
-			Log.d(TAG, "a2dp service connected. profile = " + profile);
-			if (profile == BluetoothProfile.A2DP) {
-				mBluetLoudspeaker = (BluetoothA2dp) a2dp;
-				if (mAudioManager.isBluetoothA2dpOn()) {
-					setIsA2dpReady(true);
-					// playMusic();
-
-				} else {
-					Log.d(TAG, "bluetooth a2dp is not on while service connected");
-				}
-			}
-		}
-
-		@Override
-		public void onServiceDisconnected(int profile) {
-			setIsA2dpReady(false);
-		}
-
-	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +67,7 @@ public class MainActivity extends Activity {
 		registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
 
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		mBluetoothAdapter.getProfileProxy(this, mA2dpListener, BluetoothProfile.A2DP);
+//		mBluetoothAdapter.getProfileProxy(this, mA2dpListener, BluetoothProfile.A2DP);
 
 		db = DatabaseClass.getInstance();
 		db.setActivity(this);
@@ -159,7 +89,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP, mBluetLoudspeaker);
+//		mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP, mBluetLoudspeaker);
 		unregisterReceiver(mReceiver);
 		super.onDestroy();
 	}
@@ -224,8 +154,6 @@ public class MainActivity extends Activity {
 
 	}
 
-	// ************************Bluetoothtest
-
 	// Set on Click Listener from PlayLists
 	public void setONClickListener() {
 		devices.setOnItemClickListener(new OnItemClickListener() {
@@ -235,6 +163,80 @@ public class MainActivity extends Activity {
 			}
 		});
 	}
+	
+	//******************************BLUETOOTH**************************************************
+	
+	BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context ctx, Intent intent) {
+
+			String action = intent.getAction();
+			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+                String name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
+                TextView rssi_msg = (TextView) findViewById(R.id.signal_list);
+                rssi_msg.setText(rssi_msg.getText() + name + " => " + rssi + "dBm\n");
+			}
+			// Prints or the name of the connected device but signal strength
+			// doesn't work
+//			BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//			int rssi = intent.getShortExtra(device.EXTRA_RSSI, Short.MIN_VALUE);
+//			Toast.makeText(MainActivity.this, device.getName() + " => " + rssi + "dBm\n", Toast.LENGTH_SHORT).show();
+//			Log.d(TAG, "receive intent for action : " + action);
+//			if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
+//				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_DISCONNECTED);
+//				if (state == BluetoothA2dp.STATE_CONNECTED) {
+//					setIsA2dpReady(true);
+//					// playMusic();
+//				} else if (state == BluetoothA2dp.STATE_DISCONNECTED) {
+//					setIsA2dpReady(false);
+//				}
+//			} else if (action.equals(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED)) {
+//				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_NOT_PLAYING);
+//				if (state == BluetoothA2dp.STATE_PLAYING) {
+//					Log.d(TAG, "A2DP start playing");
+//					Toast.makeText(MainActivity.this, "A2dp is playing", Toast.LENGTH_SHORT).show();
+//				} else {
+//					Log.d(TAG, "A2DP stop playing");
+//					Toast.makeText(MainActivity.this, "A2dp is stopped", Toast.LENGTH_SHORT).show();
+//				}
+//			}
+		}
+
+	};
+
+	boolean mIsA2dpReady = false;
+
+	void setIsA2dpReady(boolean ready) {
+		mIsA2dpReady = ready;
+		Toast.makeText(this, "A2DP ready ? " + (ready ? "true" : "false"), Toast.LENGTH_SHORT).show();
+
+	}
+
+	private ServiceListener mA2dpListener = new ServiceListener() {
+
+		@Override
+		public void onServiceConnected(int profile, BluetoothProfile a2dp) {
+			Log.d(TAG, "a2dp service connected. profile = " + profile);
+			if (profile == BluetoothProfile.A2DP) {
+				mBluetLoudspeaker = (BluetoothA2dp) a2dp;
+				if (mAudioManager.isBluetoothA2dpOn()) {
+					setIsA2dpReady(true);
+					// playMusic();
+
+				} else {
+					Log.d(TAG, "bluetooth a2dp is not on while service connected");
+				}
+			}
+		}
+
+		@Override
+		public void onServiceDisconnected(int profile) {
+			setIsA2dpReady(false);
+		}
+
+	};
 
 	// Shows songs from PlayList
 	public void showBluetoothdevices() {

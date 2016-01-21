@@ -21,8 +21,13 @@
             android:id="@+id/divice_list"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.83"
-            android:background="@drawable/wallpaper_blau" />
+            android:layout_weight="0.83" />
+
+        <TextView
+            android:id="@+id/signal_list"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.83" />
     </LinearLayout>
 
 </RelativeLayout>
