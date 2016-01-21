@@ -163,7 +163,9 @@ public class MainActivity extends Activity {
 		devices.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// connectDev(deviceList.get(devices.getItemAtPosition(position).toString()));
+				Toast.makeText(MainActivity.this, "Clicked Device", Toast.LENGTH_SHORT).show();
 				mBluetoothAdapter.startDiscovery();
+				Toast.makeText(MainActivity.this, "End Discovery", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
