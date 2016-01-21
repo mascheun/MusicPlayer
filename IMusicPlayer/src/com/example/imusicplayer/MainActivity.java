@@ -49,6 +49,7 @@ public class MainActivity extends Activity {
 
 	private HashMap<String, BluetoothDevice> deviceList;
 	private List<BluetoothDevice> devList;
+	private TextView rssi_msg;
 
 
 	@Override
@@ -65,6 +66,9 @@ public class MainActivity extends Activity {
 		registerReceiver(mReceiver, new IntentFilter(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED));
 		registerReceiver(mReceiver, new IntentFilter(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED));
 		registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+		
+        rssi_msg = (TextView) findViewById(R.id.signal_list);
+        rssi_msg.setText("Felix ist ein Noob");
 
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 //		mBluetoothAdapter.getProfileProxy(this, mA2dpListener, BluetoothProfile.A2DP);
@@ -175,7 +179,6 @@ public class MainActivity extends Activity {
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
                 String name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
-                TextView rssi_msg = (TextView) findViewById(R.id.signal_list);
                 rssi_msg.setText(rssi_msg.getText() + name + " => " + rssi + "dBm\n");
 			}
 			// Prints or the name of the connected device but signal strength
