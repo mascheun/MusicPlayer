@@ -176,7 +176,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onReceive(Context ctx, Intent intent) {
-
+			Toast.makeText(MainActivity.this, "Is in on Recieve", Toast.LENGTH_SHORT).show();
 			String action = intent.getAction();
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
