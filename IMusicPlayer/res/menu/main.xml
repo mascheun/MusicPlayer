@@ -33,6 +33,11 @@
         android:showAsAction="never"
         android:title="@string/edit_playlist"/>
     <item
+        android:id="@+id/bluetooth_activator"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/activ_bluetooth"/>
+    <item
         android:id="@+id/exit"
         android:orderInCategory="100"
         android:showAsAction="never"

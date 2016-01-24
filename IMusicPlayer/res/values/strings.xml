@@ -7,6 +7,7 @@
     <string name="playlist_manager">PlayList</string>
     <string name="song_list">Song Liste</string>
     <string name="played_song">Gespieltes Lied</string>
+    <string name="activ_bluetooth">Bluetooth Search</string>
     <string name="exit">Exit</string>
     <string name="delete_playlist">Playlist löschen</string>
     <string name="drawer_open">Open navigation drawer</string>
@@ -28,7 +29,7 @@
 
     <string name="title_activity_play_list">PlayListActivity</string>
     <string name="playlist_name">Name der Playlist:</string>
-    <string name="played_song_name"> </string>
+    <string name="played_song_name"></string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="add">Add</string>

@@ -95,17 +95,17 @@ public class MainActivity extends Activity {
 	private ListView viewWithCheckbock;
 	private String editedPl = "";
 	public int mode = -1;
+	public ArrayList<String[]> deviceListStrength = new ArrayList<String[]>();
 
 	private ArrayList<Item> itemList = new ArrayList<Item>();
 	
 	private DatabaseClass db;
 	protected static final String TAG = "ZS-A2dp";
-	private ListView devices;
 	private final int REQUEST_ENABLE_BT = 1;
 	private BluetoothAdapter mBluetoothAdapter;
 	private BluetoothA2dp mBluetLoudspeaker;
 
-	private HashMap<String, BluetoothDevice> deviceList;
+	public HashMap<String, BluetoothDevice> deviceList;
 	private List<BluetoothDevice> devList;
 	private TextView rssi_msg;
 
@@ -123,8 +123,6 @@ public class MainActivity extends Activity {
 		rssi_msg.setText("Felix ist ein Noob");
 
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		// mBluetoothAdapter.getProfileProxy(this, mA2dpListener,
-		// BluetoothProfile.A2DP);
 
 		db = DatabaseClass.getInstance();
 		db.setActivity(this);
@@ -133,8 +131,6 @@ public class MainActivity extends Activity {
 
 		deviceList = new HashMap<String, BluetoothDevice>();
 		devList = new ArrayList<BluetoothDevice>();
-
-		devices = (ListView) findViewById(R.id.divice_list);
 
 		sm = new SongsManager();
 		seekBarThread = new SeekBarHelper();
@@ -197,8 +193,6 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		// mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP,
-		// mBluetLoudspeaker);
 		unregisterReceiver(mReceiver);
 		super.onDestroy();
 	}
@@ -247,6 +241,9 @@ public class MainActivity extends Activity {
 			showPlayList(editPlView);
 			allLayoutsInvisible();
 			editPL.setVisibility(RelativeLayout.VISIBLE);
+			return true;
+		case R.id.bluetooth_activator:
+			showBluetoothdevices();
 			return true;
 		case R.id.exit:
 			finish();
@@ -314,16 +311,17 @@ public class MainActivity extends Activity {
 
 	public void showBluetoothdevices() {
 		if (isBluetoothAvailable()) {
-			enableBluetooth();
+			if(!enableBluetooth()) {
+				return;
+			}
 			ArrayList<String> deviceList;
 
 			deviceList = findDevices();
 			if (deviceList == null) {
 				return;
 			}
-			ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.text_layout, deviceList);
-			devices.setAdapter(adapter);
-
+			Thread connectThread = new Thread();
+			connectThread.start();
 		}
 
 	}
@@ -396,11 +394,15 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onReceive(Context ctx, Intent intent) {
+			String[] Values = new String[2]; 
 			String action = intent.getAction();
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 				int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
 				String name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
 				rssi_msg.setText(rssi_msg.getText() + name + " => " + rssi + "dBm\n");
+				Values[0] = name;
+				Values[1] = Integer.toString(rssi);
+				deviceListStrength.add(Values);
 			}
 			if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
 				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_DISCONNECTED);
@@ -654,7 +656,6 @@ public class MainActivity extends Activity {
 
 		lvAdapter = new ListViewWithChkBoxAdapter(itemList, this);
 		viewWithCheckbock.setAdapter(lvAdapter);
-		
 		mode = Constants.MODEDELETESONGFROMPL;
 	}
 
