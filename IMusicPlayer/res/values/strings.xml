@@ -6,6 +6,7 @@
     <string name="edit_playlist">Playlist bearbeiten</string>
     <string name="playlist_manager">PlayList</string>
     <string name="song_list">Song Liste</string>
+    <string name="played_song">Gespieltes Lied</string>
     <string name="exit">Exit</string>
     <string name="delete_playlist">Playlist löschen</string>
     <string name="drawer_open">Open navigation drawer</string>

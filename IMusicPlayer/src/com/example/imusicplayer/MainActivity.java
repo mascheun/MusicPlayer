@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import android.app.Activity;
@@ -17,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -26,25 +26,83 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import database.DatabaseClass;
+import functions.Item;
+import functions.ListViewWithChkBoxAdapter;
+import functions.SeekBarHelper;
+import functions.SongsManager;
 
 public class MainActivity extends Activity {
 
+	private SongsManager sm;
+	private ArrayList<String> songList;
+
+	private SeekBarHelper seekBarThread;
+
+	private ListView showSongs;
+	private Button searchBt;
+	private EditText searchText;
+	private LinearLayout songListLayout;
+	private LinearLayout playSongView;
+
+	private int playedSongPos = -1;
+
+	private TextView playedSongTv;
+	private TextView currentSongTimePos;
+	private TextView maxSongTimePos;
+	private ImageButton btPlay;
+	private ImageButton btStop;
+	private ImageButton btNextSong;
+	private ImageButton btPreviousSong;
+	private ImageButton loopSong;
+	private ImageButton randomSong;
+	private SeekBar songProgressBar;
+
+	private Boolean randomActive = false;
+	private Boolean loopActive = false;
+
+	private ArrayList<HashMap<String, String>> songsOnSDCard;
+	
+	private ListView showPlayListView;
+	private ListView editPlView;
+	private RelativeLayout homePL;
+	private RelativeLayout addPL;
+	private LinearLayout withCbView;
+	private LinearLayout plConfig;
+	private RelativeLayout editPL;
+	private Button addPlOk;
+	private Button addPlCancel;
+	private Button cbButtonOk;
+	private Button cbButtonCancel;
+	private Button confPlAddSong;
+	private Button confPlDeleteSong;
+	private Button confPlCancel;
+	private EditText writePlName;
+	private ListViewWithChkBoxAdapter lvAdapter;
+	private ListView viewWithCheckbock;
+	private String editedPl = "";
+	public int mode = -1;
+
+	private ArrayList<Item> itemList = new ArrayList<Item>();
+	
 	private DatabaseClass db;
 	protected static final String TAG = "ZS-A2dp";
 	private ListView devices;
-	AudioManager mAudioManager;
-	SongListActivity sla;
-	PlayListActivity pla;
-	public static MainActivity instance = null;
-	private static final int REQUEST_ENABLE_BT = 1;
-	public BluetoothAdapter mBluetoothAdapter;
-	public BluetoothA2dp mBluetLoudspeaker;
+	private final int REQUEST_ENABLE_BT = 1;
+	private BluetoothAdapter mBluetoothAdapter;
+	private BluetoothA2dp mBluetLoudspeaker;
 
 	private HashMap<String, BluetoothDevice> deviceList;
 	private List<BluetoothDevice> devList;
@@ -53,14 +111,9 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		instance = this;
 
 		setContentView(R.layout.activity_main);
 
-		sla = new SongListActivity();
-		pla = new PlayListActivity();
-
-		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		registerReceiver(mReceiver, new IntentFilter(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED));
 		registerReceiver(mReceiver, new IntentFilter(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED));
 		registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
@@ -80,13 +133,62 @@ public class MainActivity extends Activity {
 		deviceList = new HashMap<String, BluetoothDevice>();
 		devList = new ArrayList<BluetoothDevice>();
 
-		initializeAllGuiObjects();
+		devices = (ListView) findViewById(R.id.divice_list);
+
+		sm = new SongsManager();
+		seekBarThread = new SeekBarHelper();
+		seekBarThread.setSongManager(sm);
+
+		songListLayout = (LinearLayout) findViewById(R.id.song_list_layout);
+		showSongs = (ListView) findViewById(R.id.songs_drawer);
+		searchBt = (Button) findViewById(R.id.bt_search);
+		searchText = (EditText) findViewById(R.id.edit_text_song_search);
+
+		// SongActivity Ansicht
+		playSongView = (LinearLayout) findViewById(R.id.Play_Song_View);
+		playedSongTv = (TextView) findViewById(R.id.song_name_textview);
+		btPlay = (ImageButton) findViewById(R.id.imageButton3);
+		btStop = (ImageButton) findViewById(R.id.imageButton1);
+		btNextSong = (ImageButton) findViewById(R.id.imageButton2);
+		btPreviousSong = (ImageButton) findViewById(R.id.imageButton4);
+		randomSong = (ImageButton) findViewById(R.id.imageButton6);
+		loopSong = (ImageButton) findViewById(R.id.imageButton5);
+		songProgressBar = (SeekBar) findViewById(R.id.seekBar1);
+		currentSongTimePos = (TextView) findViewById(R.id.songCurrentDurationLabel);
+		maxSongTimePos = (TextView) findViewById(R.id.songTotalDurationLabel);
+
+		seekBarThread.setSongProgressBar(songProgressBar);
+		seekBarThread.start();
+
+		showPlayListView = (ListView) findViewById(R.id.playlist_drawer);
+		editPlView = (ListView) findViewById(R.id.edit_pl_view);
+
+		homePL = (RelativeLayout) findViewById(R.id.HomePlayListView);
+		addPL = (RelativeLayout) findViewById(R.id.AddPlayListView);
+		withCbView = (LinearLayout) findViewById(R.id.WithCBView);
+		editPL = (RelativeLayout) findViewById(R.id.EditPlayListView);
+		plConfig = (LinearLayout) findViewById(R.id.PlayListConfigView);
+
+		addPlOk = (Button) findViewById(R.id.buttonOkAdd);
+		addPlCancel = (Button) findViewById(R.id.buttonCancelAdd);
+		cbButtonOk = (Button) findViewById(R.id.cb_ok);
+		cbButtonCancel = (Button) findViewById(R.id.cb_cancel);
+
+		confPlAddSong = (Button) findViewById(R.id.add_song);
+		confPlDeleteSong = (Button) findViewById(R.id.delete_song);
+		confPlCancel = (Button) findViewById(R.id.cancel_config);
+
+		writePlName = (EditText) findViewById(R.id.editTextPlName);
+		viewWithCheckbock = (ListView) findViewById(R.id.delete_pl_view);
 
 		setONClickListener();
+		
+		setONClick();
 
-		showBluetoothdevices();
+		songsOnSDCard = sm.getPlayList();
 
-		switchToSonglist();
+		showPlayList(showPlayListView);
+		showSongList();
 
 	}
 
@@ -115,31 +217,50 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		// Gibt den ActionBar-Buttons Funktionen
 		switch (item.getItemId()) {
+		case R.id.played_song:
+			allLayoutsInvisible();
+			playSongView.setVisibility(RelativeLayout.VISIBLE);
+			return true;
 		case R.id.song_list:
-			switchToSonglist();
+			showSongList();
+			allLayoutsInvisible();
+			songListLayout.setVisibility(LinearLayout.VISIBLE);
 			return true;
 		case R.id.playlist_manager:
-			Intent playListScreen = new Intent(getApplicationContext(), PlayListActivity.class);
-			startActivity(playListScreen);
+			allLayoutsInvisible();
+			homePL.setVisibility(LinearLayout.VISIBLE);
+			return true;
+		case R.id.add_playlist:
+			allLayoutsInvisible();
+			addPL.setVisibility(RelativeLayout.VISIBLE);
+			return true;
+		case R.id.delete_playlist:
+			showPlayListToDelete();
+			allLayoutsInvisible();
+			withCbView.setVisibility(RelativeLayout.VISIBLE);
+			return true;
+		case R.id.edit_playlist:
+			showPlayList(editPlView);
+			allLayoutsInvisible();
+			editPL.setVisibility(RelativeLayout.VISIBLE);
 			return true;
 		case R.id.exit:
-			sla.finish();
-			pla.finish();
 			finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	private void switchToSonglist() {
-		Intent songListScreen = new Intent(getApplicationContext(), SongListActivity.class);
-		Bundle b = new Bundle();
-		b.putInt(Constants.MODE, Constants.REGULARSONG); // Your id
-		songListScreen.putExtras(b); // Put your id to your next Intent
-		startActivity(songListScreen);
+	
+	public void allLayoutsInvisible(){
+		withCbView.setVisibility(RelativeLayout.INVISIBLE);
+		addPL.setVisibility(RelativeLayout.INVISIBLE);
+		homePL.setVisibility(RelativeLayout.INVISIBLE);
+		editPL.setVisibility(RelativeLayout.INVISIBLE);
+		playSongView.setVisibility(LinearLayout.INVISIBLE);
+		songListLayout.setVisibility(LinearLayout.INVISIBLE);
+		plConfig.setVisibility(LinearLayout.INVISIBLE);
 	}
 
 	@Override
@@ -150,24 +271,6 @@ public class MainActivity extends Activity {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-	}
-
-	// Initialize all GUI Objects
-	public void initializeAllGuiObjects() {
-		devices = (ListView) findViewById(R.id.divice_list);
-
-	}
-
-	// Set on Click Listener from PlayLists
-	public void setONClickListener() {
-		devices.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				// connectDev(deviceList.get(devices.getItemAtPosition(position).toString()));
-				Toast.makeText(MainActivity.this, "Clicked Device", Toast.LENGTH_SHORT).show();
-				mBluetoothAdapter.startDiscovery();
-				Toast.makeText(MainActivity.this, "End Discovery", Toast.LENGTH_SHORT).show();
-			}
-		});
 	}
 
 	// ******************************BLUETOOTH**************************************************
@@ -317,4 +420,363 @@ public class MainActivity extends Activity {
 
 	};
 
+	// Songlist
+	// view*****************************************************************************************
+
+	// Show all possible Songs
+	public void showSongList() {
+		songListLayout.setVisibility(LinearLayout.VISIBLE);
+		songList = new ArrayList<String>();
+
+		for (HashMap<String, String> hm : songsOnSDCard) {
+			songList.add(hm.get("songTitle"));
+		}
+		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
+		showSongs.setAdapter(adapter);
+		songListLayout.setVisibility(LinearLayout.VISIBLE);
+	}
+
+	// Shows songs from PlayList
+	public void showSongsFromPlayList(String playlist) {
+		songList = new ArrayList<String>();
+		if (playlist == null) {
+			return;
+		}
+		songList.addAll(db.showSongInPlaylist(playlist));
+		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
+		showSongs.setAdapter(adapter);
+	}
+
+	// Shows searched songs
+	public void showSearchedSongs(ArrayList<String> searchedSongs) {
+		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, searchedSongs);
+		showSongs.setAdapter(adapter);
+	}
+
+	public String showProgress(int progress) {
+		String output = "";
+		output = progress / 60 + ":" + progress % 60;
+
+		return output;
+	}
+
+	public void setProgressBarSettings() {
+		songProgressBar.setMax(sm.getDuration() / 1000 - 1);
+		maxSongTimePos.setText(showProgress(sm.getDuration() / 1000 - 1));
+	}
+
+	// Set on Click Listener from Songs
+	public void setONClick() {
+		showSongs.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				String song = (String) parent.getAdapter().getItem(position);
+				playedSongPos = position;
+				sm.playSong(songsOnSDCard, song);
+				setProgressBarSettings();
+				playedSongTv.setText(song);
+				songListLayout.setVisibility(LinearLayout.INVISIBLE);
+				playSongView.setVisibility(RelativeLayout.VISIBLE);
+				sm.startSong();
+				seekBarThread.setRunProgressBar(true);
+
+			}
+		});
+		searchBt.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				ArrayList<String> searchedSongs = new ArrayList<String>();
+				for (String song : songList) {
+					if (song.toLowerCase(Locale.US).contains(searchText.getText().toString().toLowerCase(Locale.US))) {
+						searchedSongs.add(song);
+					}
+				}
+				searchText.setText("");
+				showSearchedSongs(searchedSongs);
+			}
+		});
+		btPlay.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				sm.startSong();
+				seekBarThread.setRunProgressBar(true);
+			}
+		});
+		btStop.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				sm.stopSong();
+				seekBarThread.setRunProgressBar(false);
+			}
+		});
+		randomSong.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				if (!randomActive) {
+					loopActive = false;
+					loopSong.setImageResource(R.drawable.replay_icon);
+					randomSong.setImageResource(R.drawable.shuffle_icon_active);
+					randomActive = true;
+				} else {
+					randomSong.setImageResource(R.drawable.shuffle_icon);
+					randomActive = false;
+				}
+				randomSong.setActivated(!randomSong.isActivated());
+			}
+		});
+		loopSong.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				if (!loopActive) {
+					randomActive = false;
+					randomSong.setImageResource(R.drawable.shuffle_icon);
+					loopSong.setImageResource(R.drawable.replay_icon_active);
+					loopActive = true;
+				} else {
+					loopSong.setImageResource(R.drawable.replay_icon);
+					loopActive = false;
+				}
+			}
+		});
+		btNextSong.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				playedSongPos++;
+				if (playedSongPos >= songList.size()) {
+					playedSongPos = 0;
+				}
+				String song = songList.get(playedSongPos);
+				sm.playSong(songsOnSDCard, song);
+				setProgressBarSettings();
+				playedSongTv.setText(song);
+				sm.startSong();
+
+			}
+		});
+		btPreviousSong.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				playedSongPos--;
+				if (playedSongPos <= -1) {
+					playedSongPos = songList.size() - 1;
+				}
+				String song = songList.get(playedSongPos);
+				sm.playSong(songsOnSDCard, song);
+				setProgressBarSettings();
+				playedSongTv.setText(song);
+				sm.startSong();
+			}
+		});
+		songProgressBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				sm.setSongTimePosition(songProgressBar.getProgress());
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+
+			}
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				currentSongTimePos.setText(showProgress(songProgressBar.getProgress()));
+				if (songProgressBar.getProgress() == songProgressBar.getMax()) {
+					System.out.println("Test1");
+					if (loopActive) {
+						songProgressBar.setProgress(0);
+						sm.startSong();
+					}
+					if (randomActive) {
+						songProgressBar.setProgress(0);
+						int randomSong;
+						randomSong = (int) (Math.random() * songList.size());
+						sm.playSong(songsOnSDCard, songList.get(randomSong));
+						playedSongTv.setText(songList.get(randomSong));
+						setProgressBarSettings();
+						sm.startSong();
+					}
+				}
+			}
+		});
+	}
+	
+	// Playlist
+	// view*****************************************************************************************
+
+	// Show all possible PlayLists
+	public void showPlayList(ListView view) {
+		view.setVisibility(ListView.VISIBLE);
+
+		ArrayList<String> allPlayLists = new ArrayList<String>();
+
+		allPlayLists = db.showPlayLists();
+
+		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allPlayLists);
+		view.setAdapter(adapter);
+	}
+
+	// Show all possible PlayLists for deleting
+	public void showPlayListToDelete() {
+		ArrayList<String> allPlayLists = new ArrayList<String>();
+
+		allPlayLists = db.showPlayLists();
+		itemList = new ArrayList<Item>();
+
+		for (String plName : allPlayLists) {
+			itemList.add(new Item(plName));
+		}
+
+		lvAdapter = new ListViewWithChkBoxAdapter(itemList, this);
+		viewWithCheckbock.setAdapter(lvAdapter);
+		mode = Constants.MODEDELETINGPL;
+	}
+
+	private void showAddSongToPlayList(String playlist) {
+		ArrayList<String> songList = new ArrayList<String>();
+		songList.addAll(fillAllSongsInList());
+		itemList = new ArrayList<Item>();
+
+		for (String songName : songList) {
+			itemList.add(new Item(songName));
+		}
+
+		lvAdapter = new ListViewWithChkBoxAdapter(itemList, this);
+		viewWithCheckbock.setAdapter(lvAdapter);
+		mode = Constants.MODEADDSONGTOPL;
+	}
+
+	private void showDeleteSongFromPlayList(String playlist) {
+		ArrayList<String> songList = new ArrayList<String>();
+		songList.addAll(db.showSongInPlaylist(playlist));
+		itemList = new ArrayList<Item>();
+
+		for (String songName : songList) {
+			itemList.add(new Item(songName));
+		}
+
+		lvAdapter = new ListViewWithChkBoxAdapter(itemList, this);
+		viewWithCheckbock.setAdapter(lvAdapter);
+		mode = Constants.MODEDELETESONGFROMPL;
+	}
+
+	public ArrayList<String> fillAllSongsInList() {
+		ArrayList<HashMap<String, String>> allSongList = songsOnSDCard;
+		ArrayList<String> songList = new ArrayList<String>();
+
+		for (HashMap<String, String> hm : allSongList) {
+			songList.add(hm.get("songTitle"));
+		}
+		return songList;
+	}
+
+	// Set on Click Listener from PlayLists
+	public void setONClickListener() {
+		showPlayListView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				String playlist = (String) parent.getAdapter().getItem(position);
+				showSongsFromPlayList(playlist);
+				allLayoutsInvisible();
+				songListLayout.setVisibility(LinearLayout.VISIBLE);
+			}
+		});
+
+		editPlView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				String playlist = (String) parent.getAdapter().getItem(position);
+				showSongsFromPlayList(playlist);
+				editedPl = playlist;
+				editPL.setVisibility(RelativeLayout.INVISIBLE);
+				plConfig.setVisibility(LinearLayout.VISIBLE);
+
+			}
+		});
+
+		addPlOk.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				String plName = "";
+				plName = writePlName.getText().toString();
+				writePlName.setText("");
+				db.addPlayList(plName);
+				addPL.setVisibility(RelativeLayout.INVISIBLE);
+				homePL.setVisibility(RelativeLayout.VISIBLE);
+				showPlayList(showPlayListView);
+			}
+		});
+
+		addPlCancel.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				writePlName.setText("");
+				addPL.setVisibility(RelativeLayout.INVISIBLE);
+				homePL.setVisibility(RelativeLayout.VISIBLE);
+			}
+		});
+
+		confPlAddSong.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				showAddSongToPlayList(editedPl);
+				plConfig.setVisibility(LinearLayout.INVISIBLE);
+				withCbView.setVisibility(RelativeLayout.VISIBLE);
+			}
+		});
+
+		confPlDeleteSong.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				showDeleteSongFromPlayList(editedPl);
+				plConfig.setVisibility(LinearLayout.INVISIBLE);
+				withCbView.setVisibility(RelativeLayout.VISIBLE);
+			}
+		});
+
+		confPlCancel.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				plConfig.setVisibility(LinearLayout.INVISIBLE);
+				homePL.setVisibility(RelativeLayout.VISIBLE);
+			}
+		});
+
+		cbButtonOk.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				switch (mode) {
+				// Mode for deleting Playlists
+				case 1:
+					for (Item item : itemList) {
+						if (item.isSelected()) {
+							db.deletePlayList(item.getName());
+						}
+					}
+					withCbView.setVisibility(RelativeLayout.INVISIBLE);
+					homePL.setVisibility(RelativeLayout.VISIBLE);
+					showPlayList(showPlayListView);
+					break;
+				// Mode for Adding songs to Playlists
+				case 2:
+					for (Item item : itemList) {
+						if (item.isSelected()) {
+							db.addSongToPlayList(editedPl, item.getName());
+						}
+					}
+					withCbView.setVisibility(RelativeLayout.INVISIBLE);
+					homePL.setVisibility(RelativeLayout.VISIBLE);
+					showPlayList(showPlayListView);
+					break;
+				// Mode for deleting songs from Playlists
+				case 3:
+					for (Item item : itemList) {
+						if (item.isSelected()) {
+							db.deleteSongFromPlayList(editedPl, item.getName());
+						}
+					}
+					withCbView.setVisibility(RelativeLayout.INVISIBLE);
+					homePL.setVisibility(RelativeLayout.VISIBLE);
+					showPlayList(showPlayListView);
+					break;
+				default:
+					break;
+				}
+
+			}
+		});
+
+		cbButtonCancel.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				withCbView.setVisibility(RelativeLayout.INVISIBLE);
+				homePL.setVisibility(RelativeLayout.VISIBLE);
+			}
+		});
+
+	}
 }
