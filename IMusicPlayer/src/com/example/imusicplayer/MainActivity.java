@@ -39,6 +39,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import database.DatabaseClass;
+import functions.ConnectThread;
 import functions.Item;
 import functions.ListViewWithChkBoxAdapter;
 import functions.SeekBarHelper;
@@ -300,6 +301,10 @@ public class MainActivity extends Activity {
 
 		return enableBluet;
 	}
+	
+	public void printToast(String text) {
+	  Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+	}
 
 	boolean mIsA2dpReady = false;
 
@@ -320,7 +325,9 @@ public class MainActivity extends Activity {
 			if (deviceList == null) {
 				return;
 			}
-			Thread connectThread = new Thread();
+			printToast("Create thread");
+			ConnectThread connectThread = new ConnectThread(this, mBluetoothAdapter);
+			printToast("Start thread");
 			connectThread.start();
 		}
 
