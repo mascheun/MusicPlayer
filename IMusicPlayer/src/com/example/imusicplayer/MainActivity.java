@@ -321,7 +321,7 @@ public class MainActivity extends Activity {
 			if (deviceList == null) {
 				return;
 			}
-			ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, deviceList);
+			ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.text_layout, deviceList);
 			devices.setAdapter(adapter);
 
 		}
@@ -434,7 +434,7 @@ public class MainActivity extends Activity {
 		for (HashMap<String, String> hm : songsOnSDCard) {
 			songList.add(hm.get("songTitle"));
 		}
-		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
+		ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.text_layout, songList);
 		showSongs.setAdapter(adapter);
 		songListLayout.setVisibility(LinearLayout.VISIBLE);
 	}
@@ -446,14 +446,14 @@ public class MainActivity extends Activity {
 			return;
 		}
 		songList.addAll(db.showSongInPlaylist(playlist));
-		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
+		ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.text_layout, songList);
 		showSongs.setAdapter(adapter);
 		showConfigPlSongs.setAdapter(adapter);
 	}
 
 	// Shows searched songs
 	public void showSearchedSongs(ArrayList<String> searchedSongs) {
-		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, searchedSongs);
+		ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.text_layout, searchedSongs);
 		showSongs.setAdapter(adapter);
 	}
 
@@ -609,7 +609,7 @@ public class MainActivity extends Activity {
 
 		allPlayLists = db.showPlayLists();
 
-		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allPlayLists);
+		ListAdapter adapter = new ArrayAdapter<String>(this, R.layout.text_layout, allPlayLists);
 		view.setAdapter(adapter);
 	}
 
@@ -654,6 +654,7 @@ public class MainActivity extends Activity {
 
 		lvAdapter = new ListViewWithChkBoxAdapter(itemList, this);
 		viewWithCheckbock.setAdapter(lvAdapter);
+		
 		mode = Constants.MODEDELETESONGFROMPL;
 	}
 

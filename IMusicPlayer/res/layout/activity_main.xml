@@ -78,6 +78,7 @@
             android:id="@+id/song_name_textview"
             android:layout_width="fill_parent"
             android:layout_height="264dp"
+            android:textColor="#FFFFFF"
             android:layout_weight="0.32"
             android:text="@string/played_song_name"
             android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -209,6 +210,7 @@
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
             android:text="@string/playlist_name"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
