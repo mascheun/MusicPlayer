@@ -302,7 +302,7 @@
         android:visibility="invisible" >
 
         <ListView
-            android:id="@+id/songs_in_cofig_pl"
+            android:id="@+id/songs_in_config_pl"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="0.83"

@@ -77,6 +77,7 @@ public class MainActivity extends Activity {
 	
 	private ListView showPlayListView;
 	private ListView editPlView;
+	private ListView showConfigPlSongs;
 	private RelativeLayout homePL;
 	private RelativeLayout addPL;
 	private LinearLayout withCbView;
@@ -160,8 +161,10 @@ public class MainActivity extends Activity {
 		seekBarThread.setSongProgressBar(songProgressBar);
 		seekBarThread.start();
 
+		//PlaylistActivity Ansicht
 		showPlayListView = (ListView) findViewById(R.id.playlist_drawer);
 		editPlView = (ListView) findViewById(R.id.edit_pl_view);
+		showConfigPlSongs = (ListView) findViewById(R.id.songs_in_config_pl);
 
 		homePL = (RelativeLayout) findViewById(R.id.HomePlayListView);
 		addPL = (RelativeLayout) findViewById(R.id.AddPlayListView);
@@ -445,6 +448,7 @@ public class MainActivity extends Activity {
 		songList.addAll(db.showSongInPlaylist(playlist));
 		ListAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songList);
 		showSongs.setAdapter(adapter);
+		showConfigPlSongs.setAdapter(adapter);
 	}
 
 	// Shows searched songs
