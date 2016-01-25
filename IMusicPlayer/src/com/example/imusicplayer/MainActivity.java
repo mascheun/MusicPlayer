@@ -479,7 +479,8 @@ public class MainActivity extends Activity {
 				}
 			}
 			if (strength != -9999999) {
-				connectDev(devList.get(0));
+				printToast("Here connect");
+				//connectDev(devList.get(0));
 			}
 		}
 
