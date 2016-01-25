@@ -11,20 +11,17 @@ public class ConnectThread extends Thread {
   private MainActivity activity;
   private int strength = -9999999;
   private String name = "";
+  private boolean run = true;
 
   public ConnectThread(MainActivity activity, BluetoothAdapter adapter) {
-    activity.printToast("Assign values");
     this.activity = activity;
     this.adapter = adapter;
   }
-
-  private boolean run = true;
 
   @Override
   public void run() {
     
     while (run) {
-      activity.printToast("Enter While");
       adapter.startDiscovery();
       try {
         Thread.sleep(2000);
@@ -33,11 +30,9 @@ public class ConnectThread extends Thread {
       }
       for (String[] dev : activity.deviceListStrength) {
         if (Integer.parseInt(dev[1]) > strength) {
-          activity.printToast("Got new value for " + name + " and rssi " + strength);
           name = dev[0];
         }
       }
-      activity.printToast("Connect to " + name);
       activity.connectDev(activity.deviceList.get(name));
       try {
         Thread.sleep(3000);

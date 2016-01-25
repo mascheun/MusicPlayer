@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -39,13 +40,12 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import database.DatabaseClass;
-import functions.ConnectThread;
 import functions.Item;
 import functions.ListViewWithChkBoxAdapter;
 import functions.SeekBarHelper;
 import functions.SongsManager;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity{
 
 	private SongsManager sm;
 	private ArrayList<String> songList;
@@ -59,6 +59,10 @@ public class MainActivity extends Activity {
 	private LinearLayout playSongView;
 
 	private int playedSongPos = -1;
+	
+	private int strength = -9999999;
+  private String name = "";
+  private boolean run = true;
 
 	private TextView playedSongTv;
 	private TextView currentSongTimePos;
@@ -73,6 +77,8 @@ public class MainActivity extends Activity {
 
 	private Boolean randomActive = false;
 	private Boolean loopActive = false;
+	private Boolean bluetThread = false;
+	private Boolean finishedReceive = false;
 
 	private ArrayList<HashMap<String, String>> songsOnSDCard;
 	
@@ -109,6 +115,27 @@ public class MainActivity extends Activity {
 	public HashMap<String, BluetoothDevice> deviceList;
 	private List<BluetoothDevice> devList;
 	private TextView rssi_msg;
+	private UpdateConnection task = new UpdateConnection();
+	
+	private class UpdateConnection extends AsyncTask<String, Void, String> {
+    @Override
+    protected String doInBackground(String... device) {
+      while(true) {
+        while (run) {
+          mBluetoothAdapter.startDiscovery();
+            try {
+              Thread.sleep(5000);
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+              return name;
+            }
+          }
+        while(!run) {
+          //Do Nothing
+        }
+      }
+    }
+  }
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -314,29 +341,39 @@ public class MainActivity extends Activity {
 
 	}
 
-	public void showBluetoothdevices() {
+	public synchronized void showBluetoothdevices() {
 		if (isBluetoothAvailable()) {
 			if(!enableBluetooth()) {
 				return;
 			}
-			ArrayList<String> deviceList;
-
-			deviceList = findDevices();
+			deviceList.clear();
+			findDevices();
 			if (deviceList == null) {
 				return;
 			}
-			printToast("Create thread");
-			ConnectThread connectThread = new ConnectThread(this, mBluetoothAdapter);
-			printToast("Start thread");
-			connectThread.start();
+			if(bluetThread == false) {
+			  setRun(true);
+			  task.execute("");
+			  bluetThread = true;
+			} else {
+			  printToast("Stop Thread");
+			  setRun(false);
+			  bluetThread = false;
+			}
+			printToast("Outside started");
+			
 		}
 
 	}
 
-	public ArrayList<String> findDevices() {
+	private void setRun(boolean b) {
+    this.run = b;
+    
+  }
+
+  public void findDevices() {
 
 		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-		ArrayList<String> allBluetoothDevices = new ArrayList<String>();
 		// If there are paired devices
 		if (pairedDevices.size() > 0) {
 			// Loop through paired devices
@@ -344,16 +381,12 @@ public class MainActivity extends Activity {
 				// Add the name and address to an array adapter to show in a
 				// ListView
 				String dev = device.getName() + "\n" + device.getAddress();
-				allBluetoothDevices.add(dev);
 				deviceList.put(dev, device);
 				devList.add(device);
 			}
 
-			return allBluetoothDevices;
-
 		}
 
-		return null;
 	}
 
 	public void connectDev(BluetoothDevice device) {
@@ -401,6 +434,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onReceive(Context ctx, Intent intent) {
+		  finishedReceive = false;
 			String[] Values = new String[2]; 
 			String action = intent.getAction();
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
@@ -411,6 +445,7 @@ public class MainActivity extends Activity {
 				Values[1] = Integer.toString(rssi);
 				deviceListStrength.add(Values);
 			}
+			
 			if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
 				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_DISCONNECTED);
 				if (state == BluetoothA2dp.STATE_CONNECTED) {
@@ -428,9 +463,27 @@ public class MainActivity extends Activity {
 					Toast.makeText(MainActivity.this, "A2dp is stopped", Toast.LENGTH_SHORT).show();
 				}
 			}
+			finishedReceive = true;
+			checkIfChangeConnect();
 		}
 
 	};
+	
+	private void checkIfChangeConnect() {
+    if(finishedReceive) {
+      for (String[] dev : deviceListStrength) {
+        int s = Integer.parseInt(dev[1]);
+        if (s > strength) {
+          strength = s;
+          name = dev[0];
+        }
+      }
+      if(strength != -9999999) {
+        connectDev(deviceList.get(name));
+      }
+    }
+    
+  }
 
 	// Songlist
 	// view*****************************************************************************************
@@ -792,4 +845,5 @@ public class MainActivity extends Activity {
 		});
 
 	}
+
 }
