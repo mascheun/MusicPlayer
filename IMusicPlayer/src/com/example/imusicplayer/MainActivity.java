@@ -45,7 +45,7 @@ import functions.ListViewWithChkBoxAdapter;
 import functions.SeekBarHelper;
 import functions.SongsManager;
 
-public class MainActivity extends Activity{
+public class MainActivity extends Activity {
 
 	private SongsManager sm;
 	private ArrayList<String> songList;
@@ -59,10 +59,10 @@ public class MainActivity extends Activity{
 	private LinearLayout playSongView;
 
 	private int playedSongPos = -1;
-	
+
 	private int strength = -9999999;
-  private String name = "";
-  private boolean run = true;
+	private String name = "";
+	private boolean run = true;
 
 	private TextView playedSongTv;
 	private TextView currentSongTimePos;
@@ -81,7 +81,7 @@ public class MainActivity extends Activity{
 	private Boolean finishedReceive = false;
 
 	private ArrayList<HashMap<String, String>> songsOnSDCard;
-	
+
 	private ListView showPlayListView;
 	private ListView editPlView;
 	private ListView showConfigPlSongs;
@@ -105,7 +105,7 @@ public class MainActivity extends Activity{
 	public ArrayList<String[]> deviceListStrength = new ArrayList<String[]>();
 
 	private ArrayList<Item> itemList = new ArrayList<Item>();
-	
+
 	private DatabaseClass db;
 	protected static final String TAG = "ZS-A2dp";
 	private final int REQUEST_ENABLE_BT = 1;
@@ -116,26 +116,26 @@ public class MainActivity extends Activity{
 	private List<BluetoothDevice> devList;
 	private TextView rssi_msg;
 	private UpdateConnection task = new UpdateConnection();
-	
+
 	private class UpdateConnection extends AsyncTask<String, Void, String> {
-    @Override
-    protected String doInBackground(String... device) {
-      while(true) {
-        while (run) {
-          mBluetoothAdapter.startDiscovery();
-            try {
-              Thread.sleep(5000);
-            } catch (InterruptedException e) {
-              e.printStackTrace();
-              return name;
-            }
-          }
-        while(!run) {
-          //Do Nothing
-        }
-      }
-    }
-  }
+		@Override
+		protected String doInBackground(String... device) {
+			while (true) {
+				while (run) {
+					mBluetoothAdapter.startDiscovery();
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+						return name;
+					}
+				}
+				while (!run) {
+					// Do Nothing
+				}
+			}
+		}
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +185,7 @@ public class MainActivity extends Activity{
 		seekBarThread.setSongProgressBar(songProgressBar);
 		seekBarThread.start();
 
-		//PlaylistActivity Ansicht
+		// PlaylistActivity Ansicht
 		showPlayListView = (ListView) findViewById(R.id.playlist_drawer);
 		editPlView = (ListView) findViewById(R.id.edit_pl_view);
 		showConfigPlSongs = (ListView) findViewById(R.id.songs_in_config_pl);
@@ -209,7 +209,7 @@ public class MainActivity extends Activity{
 		viewWithCheckbock = (ListView) findViewById(R.id.delete_pl_view);
 
 		setONClickListener();
-		
+
 		setONClick();
 
 		songsOnSDCard = sm.getPlayList();
@@ -280,8 +280,8 @@ public class MainActivity extends Activity{
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	public void allLayoutsInvisible(){
+
+	public void allLayoutsInvisible() {
 		withCbView.setVisibility(RelativeLayout.INVISIBLE);
 		addPL.setVisibility(RelativeLayout.INVISIBLE);
 		homePL.setVisibility(RelativeLayout.INVISIBLE);
@@ -328,9 +328,9 @@ public class MainActivity extends Activity{
 
 		return enableBluet;
 	}
-	
+
 	public void printToast(String text) {
-	  Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 	}
 
 	boolean mIsA2dpReady = false;
@@ -343,7 +343,7 @@ public class MainActivity extends Activity{
 
 	public synchronized void showBluetoothdevices() {
 		if (isBluetoothAvailable()) {
-			if(!enableBluetooth()) {
+			if (!enableBluetooth()) {
 				return;
 			}
 			deviceList.clear();
@@ -351,27 +351,27 @@ public class MainActivity extends Activity{
 			if (deviceList == null) {
 				return;
 			}
-			if(bluetThread == false) {
-			  setRun(true);
-			  task.execute("");
-			  bluetThread = true;
+			if (bluetThread == false) {
+				setRun(true);
+				task.execute("");
+				bluetThread = true;
 			} else {
-			  printToast("Stop Thread");
-			  setRun(false);
-			  bluetThread = false;
+				printToast("Stop Thread");
+				setRun(false);
+				bluetThread = false;
 			}
 			printToast("Outside started");
-			
+
 		}
 
 	}
 
 	private void setRun(boolean b) {
-    this.run = b;
-    
-  }
+		this.run = b;
 
-  public void findDevices() {
+	}
+
+	public void findDevices() {
 
 		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 		// If there are paired devices
@@ -434,8 +434,8 @@ public class MainActivity extends Activity{
 
 		@Override
 		public void onReceive(Context ctx, Intent intent) {
-		  finishedReceive = false;
-			String[] Values = new String[2]; 
+			finishedReceive = false;
+			String[] Values = new String[2];
 			String action = intent.getAction();
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 				int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
@@ -445,7 +445,7 @@ public class MainActivity extends Activity{
 				Values[1] = Integer.toString(rssi);
 				deviceListStrength.add(Values);
 			}
-			
+
 			if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
 				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_DISCONNECTED);
 				if (state == BluetoothA2dp.STATE_CONNECTED) {
@@ -468,22 +468,22 @@ public class MainActivity extends Activity{
 		}
 
 	};
-	
+
 	private void checkIfChangeConnect() {
-    if(finishedReceive) {
-      for (String[] dev : deviceListStrength) {
-        int s = Integer.parseInt(dev[1]);
-        if (s > strength) {
-          strength = s;
-          name = dev[0];
-        }
-      }
-      if(strength != -9999999) {
-        connectDev(deviceList.get(name));
-      }
-    }
-    
-  }
+		if (finishedReceive) {
+			for (String[] dev : deviceListStrength) {
+				int s = Integer.parseInt(dev[1]);
+				if (s > strength) {
+					strength = s;
+					name = dev[0];
+				}
+			}
+			if (strength != -9999999) {
+				connectDev(devList.get(0));
+			}
+		}
+
+	}
 
 	// Songlist
 	// view*****************************************************************************************
@@ -659,7 +659,7 @@ public class MainActivity extends Activity{
 			}
 		});
 	}
-	
+
 	// Playlist
 	// view*****************************************************************************************
 
