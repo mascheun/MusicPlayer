@@ -79,6 +79,7 @@ public class MainActivity extends Activity {
 	private Boolean loopActive = false;
 	private Boolean bluetThread = false;
 	private Boolean finishedReceive = false;
+	private Boolean taskExecuted = false;
 
 	private ArrayList<HashMap<String, String>> songsOnSDCard;
 
@@ -120,6 +121,7 @@ public class MainActivity extends Activity {
 	private class UpdateConnection extends AsyncTask<String, Void, String> {
 		@Override
 		protected String doInBackground(String... device) {
+		  taskExecuted = true;
 			while (true) {
 				while (run) {
 					mBluetoothAdapter.startDiscovery();
@@ -353,14 +355,14 @@ public class MainActivity extends Activity {
 			}
 			if (bluetThread == false) {
 				setRun(true);
-				task.execute("");
+				if(!taskExecuted) {
+				  task.execute("");
+				}
 				bluetThread = true;
 			} else {
-				printToast("Stop Thread");
 				setRun(false);
 				bluetThread = false;
 			}
-			printToast("Outside started");
 
 		}
 
@@ -394,13 +396,14 @@ public class MainActivity extends Activity {
 		mBluetoothAdapter.getProfileProxy(this, mProfileListener, BluetoothProfile.A2DP);
 		try {
 			connect = BluetoothA2dp.class.getDeclaredMethod("connect", BluetoothDevice.class);
-
 		} catch (NoSuchMethodException e) {
 			Toast.makeText(MainActivity.this, "can not create connect method", Toast.LENGTH_LONG).show();
 		}
 
 		try {
-			connect.invoke(mBluetLoudspeaker, device);
+		  if(mBluetLoudspeaker != null && device != null) {
+		    connect.invoke(mBluetLoudspeaker, device);
+		  }
 		} catch (IllegalAccessException e) {
 			Toast.makeText(MainActivity.this, "Illegal Access", Toast.LENGTH_LONG).show();
 			e.printStackTrace();
@@ -411,7 +414,7 @@ public class MainActivity extends Activity {
 			Toast.makeText(MainActivity.this, "Invocation Target", Toast.LENGTH_LONG).show();
 			e.printStackTrace();
 		}
-
+//
 		// Close proxy connection after use.
 		mBluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP, mBluetLoudspeaker);
 	}
@@ -437,13 +440,27 @@ public class MainActivity extends Activity {
 			finishedReceive = false;
 			String[] Values = new String[2];
 			String action = intent.getAction();
+			Boolean newEntry = true;
+			int counter = 0;
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 				int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
 				String name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
 				rssi_msg.setText(rssi_msg.getText() + name + " => " + rssi + "dBm\n");
-				Values[0] = name;
-				Values[1] = Integer.toString(rssi);
-				deviceListStrength.add(Values);
+				for(String[] entry : deviceListStrength) {
+				  if(entry[0].equals(name)) {
+				    Values[0] = name;
+				    Values[1] = Integer.toString(rssi);
+				    deviceListStrength.set(counter, Values);
+				    newEntry = false;
+				    break;
+				  }
+				  counter++;
+				}
+				if(newEntry) {
+  				Values[0] = name;
+  				Values[1] = Integer.toString(rssi);
+  				deviceListStrength.add(Values);
+				}
 			}
 
 			if (action.equals(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED)) {
@@ -473,14 +490,19 @@ public class MainActivity extends Activity {
 		if (finishedReceive) {
 			for (String[] dev : deviceListStrength) {
 				int s = Integer.parseInt(dev[1]);
+				printToast("Device: " + dev[0] + " signal: " + s);
 				if (s > strength) {
 					strength = s;
 					name = dev[0];
 				}
 			}
 			if (strength != -9999999) {
-				printToast("Here connect");
-				//connectDev(devList.get(0));
+			  for(BluetoothDevice dev : devList) {
+			    if(dev.getName().equals(name)) {
+			      printToast(dev.getName() + " equals " + name);
+			      connectDev(dev);
+			    }
+			  }
 			}
 		}
 
