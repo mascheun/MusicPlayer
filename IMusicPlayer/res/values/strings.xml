@@ -7,7 +7,7 @@
     <string name="playlist_manager">PlayList</string>
     <string name="song_list">Song Liste</string>
     <string name="played_song">Gespieltes Lied</string>
-    <string name="activ_bluetooth">Bluetooth Search</string>
+    <string name="activ_bluetooth">Bluetoothsignal suchen</string>
     <string name="exit">Exit</string>
     <string name="delete_playlist">Playlist löschen</string>
     <string name="drawer_open">Open navigation drawer</string>

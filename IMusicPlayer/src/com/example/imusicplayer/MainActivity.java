@@ -36,7 +36,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import database.DatabaseClass;
@@ -115,7 +114,6 @@ public class MainActivity extends Activity {
 
 	public HashMap<String, BluetoothDevice> deviceList;
 	private List<BluetoothDevice> devList;
-	private TextView rssi_msg;
 	private UpdateConnection task = new UpdateConnection();
 
 	private class UpdateConnection extends AsyncTask<String, Void, String> {
@@ -126,11 +124,18 @@ public class MainActivity extends Activity {
 				while (run) {
 					mBluetoothAdapter.startDiscovery();
 					try {
-						Thread.sleep(5000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 						return name;
 					}
+					mBluetoothAdapter.cancelDiscovery();
+					try {
+            Thread.sleep(3000);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+            return name;
+          }
 				}
 				while (!run) {
 					// Do Nothing
@@ -148,9 +153,6 @@ public class MainActivity extends Activity {
 		registerReceiver(mReceiver, new IntentFilter(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED));
 		registerReceiver(mReceiver, new IntentFilter(BluetoothA2dp.ACTION_PLAYING_STATE_CHANGED));
 		registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
-
-		rssi_msg = (TextView) findViewById(R.id.signal_list);
-		rssi_msg.setText("Felix ist ein Noob");
 
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -323,7 +325,7 @@ public class MainActivity extends Activity {
 			try {
 				this.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 			} catch (Exception e) {
-
+			  Log.d("MainActivity", "Ask for enable bluetooth failed");
 			}
 
 		}
@@ -331,16 +333,10 @@ public class MainActivity extends Activity {
 		return enableBluet;
 	}
 
-	public void printToast(String text) {
-		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-	}
-
 	boolean mIsA2dpReady = false;
 
 	void setIsA2dpReady(boolean ready) {
 		mIsA2dpReady = ready;
-		Toast.makeText(this, "A2DP ready ? " + (ready ? "true" : "false"), Toast.LENGTH_SHORT).show();
-
 	}
 
 	public synchronized void showBluetoothdevices() {
@@ -397,7 +393,7 @@ public class MainActivity extends Activity {
 		try {
 			connect = BluetoothA2dp.class.getDeclaredMethod("connect", BluetoothDevice.class);
 		} catch (NoSuchMethodException e) {
-			Toast.makeText(MainActivity.this, "can not create connect method", Toast.LENGTH_LONG).show();
+			Log.d("MainActivity", "can not create connect method");
 		}
 
 		try {
@@ -405,13 +401,13 @@ public class MainActivity extends Activity {
 		    connect.invoke(mBluetLoudspeaker, device);
 		  }
 		} catch (IllegalAccessException e) {
-			Toast.makeText(MainActivity.this, "Illegal Access", Toast.LENGTH_LONG).show();
+			Log.d("MainActivity", "Illegal Access");
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			Toast.makeText(MainActivity.this, "Illegal Argument", Toast.LENGTH_LONG).show();
+			Log.d("MainActivity", "Illegal Argument");
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			Toast.makeText(MainActivity.this, "Invocation Target", Toast.LENGTH_LONG).show();
+			Log.d("MainActivity", "Invocation Target");
 			e.printStackTrace();
 		}
 //
@@ -445,7 +441,6 @@ public class MainActivity extends Activity {
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 				int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
 				String name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
-				rssi_msg.setText(rssi_msg.getText() + name + " => " + rssi + "dBm\n");
 				for(String[] entry : deviceListStrength) {
 				  if(entry[0].equals(name)) {
 				    Values[0] = name;
@@ -474,10 +469,8 @@ public class MainActivity extends Activity {
 				int state = intent.getIntExtra(BluetoothA2dp.EXTRA_STATE, BluetoothA2dp.STATE_NOT_PLAYING);
 				if (state == BluetoothA2dp.STATE_PLAYING) {
 					Log.d(TAG, "A2DP start playing");
-					Toast.makeText(MainActivity.this, "A2dp is playing", Toast.LENGTH_SHORT).show();
 				} else {
 					Log.d(TAG, "A2DP stop playing");
-					Toast.makeText(MainActivity.this, "A2dp is stopped", Toast.LENGTH_SHORT).show();
 				}
 			}
 			finishedReceive = true;
@@ -490,7 +483,6 @@ public class MainActivity extends Activity {
 		if (finishedReceive) {
 			for (String[] dev : deviceListStrength) {
 				int s = Integer.parseInt(dev[1]);
-				printToast("Device: " + dev[0] + " signal: " + s);
 				if (s > strength) {
 					strength = s;
 					name = dev[0];
@@ -499,7 +491,6 @@ public class MainActivity extends Activity {
 			if (strength != -9999999) {
 			  for(BluetoothDevice dev : devList) {
 			    if(dev.getName().equals(name)) {
-			      printToast(dev.getName() + " equals " + name);
 			      connectDev(dev);
 			    }
 			  }
