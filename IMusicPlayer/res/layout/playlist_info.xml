@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="6dip" >
+
+    <TextView
+        android:id="@+id/deletePlTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/chk_box"
+        android:textColor="#FFFFFF"
+        android:layout_alignBottom="@+id/chk_box"
+        android:layout_toRightOf="@+id/chk_box" />
+
+    <CheckBox
+        android:id="@+id/chk_box"
+        android:textColor="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+</RelativeLayout>

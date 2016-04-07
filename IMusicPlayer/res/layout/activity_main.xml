@@ -1,0 +1,338 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/wallpaper_blau"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.imusicplayer.MainActivity" >
+
+    <LinearLayout
+        android:id="@+id/divice_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/wallpaper_blau"
+        android:orientation="vertical"
+        android:visibility="invisible" >
+
+        <ListView
+            android:id="@+id/divice_list"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.83" />
+
+        <TextView
+            android:id="@+id/signal_list"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.83" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/song_list_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/wallpaper_blau"
+        android:orientation="vertical"
+        android:visibility="invisible" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/edit_text_song_search"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:ems="10" />
+
+            <Button
+                android:id="@+id/bt_search"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/search" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/songs_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/wallpaper_blau"
+            android:choiceMode="singleChoice"
+            android:divider="#e3e3e3"
+            android:dividerHeight="0.1dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/Play_Song_View"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/wallpaper_blau"
+        android:orientation="vertical"
+        android:visibility="invisible" >
+
+        <TextView
+            android:id="@+id/song_name_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="264dp"
+            android:textColor="#FFFFFF"
+            android:layout_weight="0.32"
+            android:text="@string/played_song_name"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/imageButton5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/description6"
+                android:src="@drawable/replay_icon" />
+
+            <ImageButton
+                android:id="@+id/imageButton6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="26dp"
+                android:layout_marginStart="26dp"
+                android:contentDescription="@string/description5"
+                android:scaleType="center"
+                android:src="@drawable/shuffle_icon" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timerDisplay"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" >
+
+            <!-- Current Duration Label -->
+
+            <TextView
+                android:id="@+id/songCurrentDurationLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:textColor="#eeeeee"
+                android:textStyle="bold" />
+            <!-- Total Duration Label -->
+
+            <TextView
+                android:id="@+id/songTotalDurationLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="#04cbde"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/seekBar1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="21dp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/imageButton4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/description3"
+                android:src="@drawable/prev_track_icon" />
+
+            <ImageButton
+                android:id="@+id/imageButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/description1"
+                android:src="@drawable/play_icon" />
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/description2"
+                android:src="@drawable/next_track_icon" />
+
+            <ImageButton
+                android:id="@+id/imageButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:contentDescription="@string/description4"
+                android:src="@drawable/stop_icon" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/HomePlayListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/wallpaper_blau"
+        android:visibility="invisible" >
+
+        <ListView
+            android:id="@+id/playlist_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/wallpaper_blau"
+            android:choiceMode="singleChoice"
+            android:divider="#e3e3e3"
+            android:dividerHeight="0.1dp"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/AddPlayListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/wallpaper_blau"
+        android:visibility="invisible" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:text="@string/playlist_name"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/editTextPlName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView1"
+            android:ems="10" />
+
+        <Button
+            android:id="@+id/buttonOkAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/editTextPlName"
+            android:text="@string/ok" />
+
+        <Button
+            android:id="@+id/buttonCancelAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/buttonOkAdd"
+            android:layout_alignBottom="@+id/buttonOkAdd"
+            android:layout_alignEnd="@+id/textView1"
+            android:layout_alignRight="@+id/textView1"
+            android:text="@string/cancel" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/WithCBView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/wallpaper_blau"
+        android:orientation="vertical"
+        android:visibility="invisible" >
+
+        <ListView
+            android:id="@+id/delete_pl_view"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.83"
+            android:background="@drawable/wallpaper_blau" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/cb_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/ok" />
+
+            <Button
+                android:id="@+id/cb_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/cancel" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/EditPlayListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/wallpaper_blau"
+        android:visibility="invisible" >
+
+        <ListView
+            android:id="@+id/edit_pl_view"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="start"
+            android:background="@drawable/wallpaper_blau"
+            android:choiceMode="singleChoice"
+            android:divider="#e3e3e3"
+            android:dividerHeight="0.1dp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/PlayListConfigView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/wallpaper_blau"
+        android:orientation="vertical"
+        android:visibility="invisible" >
+
+        <ListView
+            android:id="@+id/songs_in_config_pl"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.83"
+            android:background="@drawable/wallpaper_blau" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/add_song"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/add" />
+
+            <Button
+                android:id="@+id/delete_song"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/delete" />
+
+            <Button
+                android:id="@+id/cancel_config"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/cancel" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
